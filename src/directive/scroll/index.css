@@ -1,0 +1,15 @@
+.scroll-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.scroll-layer > div {
+    position: relative;
+}
+
+.scroll-mouseup-transition {
+    transition: top .5s ease-out;
+}
