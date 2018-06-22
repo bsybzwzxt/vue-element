@@ -1,17 +1,13 @@
 /*loading*/
-.loading {
-    height: 100%;
-}
-
-.loading .el-loading-mask {
+.el-loading-mask {
     background-color: rgba(255, 255, 255, .5);
 }
 
-.loading .el-loading-spinner .el-loading-text {
+.el-loading-spinner .el-loading-text {
     color: #001529;
 }
 
-.loading .el-loading-spinner .path {
+.el-loading-spinner .path {
     stroke: #001529;
 }
 
@@ -86,6 +82,12 @@
     overflow: auto;
 }
 
+/*表单*/
+.el-select .el-input__inner {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 /*!*change ElementUI add*!*/
 /*.el-block {*/
 /*display: block;*/

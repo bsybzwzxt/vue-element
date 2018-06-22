@@ -1,7 +1,7 @@
 <template>
     <div class="tabulation">
         <slot name="caption"></slot>
-        <el-table :data="data" :border="showBorder" :max-height="maxHeight" @row-dblclick="rowSelected"
+        <el-table :data="data" :border="showBorder" :max-height="maxHeight"
                   @selection-change="selectionChange" @sort-change="sortChange">
             <el-table-column v-if="showSelect" type="selection" align="center" width="50"
                              :selectable="setSelectable && selectable"></el-table-column>
@@ -147,10 +147,6 @@
             },
             dropdownCommand(value) {
                 this.dropdown.currentItem.callback(value, this.dropdown.currentRow);
-            },
-            // 双击选中
-            rowSelected(row) {
-                this.$children[0].toggleRowSelection(row);
             },
             // 选中变化,selection为选择数组对象
             selectionChange(selection) {

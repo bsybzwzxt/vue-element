@@ -1,5 +1,5 @@
 <template>
-    <div class="loading" v-loading.fullscreen.lock="$state.loading" element-loading-text="loading">
+    <div class="loading" v-loading.fullscreen.lock="$state.loading" element-loading-text="Loading">
         <transition name="fade" mode="out-in">
             <router-view></router-view>
         </transition>

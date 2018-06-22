@@ -9,6 +9,7 @@ const route = {
     Login: resolve => require.ensure([], () => resolve(require('src/vue/Login')), 'vue/Login'),
     Error: resolve => require.ensure([], () => resolve(require('src/vue/Error')), 'vue/Error'),
     DemoTable: resolve => require.ensure([], () => resolve(require('src/vue/demo/Table')), 'vue/demo/Table'),
+    PermissionUser: resolve => require.ensure([], () => resolve(require('src/vue/permission/User')), 'vue/permission/User'),
 };
 
 export default new Router({
@@ -18,6 +19,8 @@ export default new Router({
         component: MainLayout,
         children: [{
             path: 'demo/table', component: route.DemoTable
+        }, {
+            path: 'permission/user', component: route.PermissionUser
         }]
     }, {
         path: '/login', component: route.Login

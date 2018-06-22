@@ -61,64 +61,27 @@
                     //     path: '/main/index'
                     // }]
                 }, {
-                    index: 'product',
-                    name: '商品管理',
+                    index: 'demo',
+                    name: '演示',
                     icon: 'fa-cubes',
                     children: [{
-                        index: 'product-1',
-                        name: '批量导入',
-                        path: '/main/product/batch/import'
-                    }, {
-                        index: 'product-2',
-                        name: '主数据录入',
-                        path: ''
-                    }, {
-                        index: 'product-3',
-                        name: '模板管理',
-                        path: '/main/product/template/table'
-                    }, {
-                        index: 'product-4',
-                        name: '商品列表',
-                        path: '/main/product/product/table'
+                        index: 'demo-1',
+                        name: '表格',
+                        path: '/main/demo/table'
                     }]
                 }, {
-                    index: 'diamond',
-                    name: '品牌管理',
-                    path: '/main/brand/brand/table',
-                    icon: 'fa-diamond'
-                }, {
-                    index: 'picture',
-                    name: '图片管理',
-                    icon: 'fa-photo',
+                    index: 'permission',
+                    name: '权限设置',
+                    icon: 'fa-cubes',
                     children: [{
-                        index: 'picture-1',
-                        name: '图片上传',
-                        path: ''
+                        index: 'permission-1',
+                        name: '角色列表',
+                        path: '/main/permission/role'
                     }, {
-                        index: 'picture-2',
-                        name: '图片列表',
-                        path: '/main/picture/picture/table'
+                        index: 'permission-2',
+                        name: '用户列表',
+                        path: '/main/permission/user'
                     }]
-                }, {
-                    index: 'cog',
-                    name: '配置管理',
-                    path: '',
-                    icon: 'fa-cog'
-                }, {
-                    index: 'chart',
-                    name: '运营管理',
-                    path: '',
-                    icon: 'fa-line-chart'
-                }, {
-                    index: 'windows',
-                    name: '开放平台',
-                    path: '',
-                    icon: 'fa-windows'
-                }, {
-                    index: 'trash',
-                    name: '回收站',
-                    path: '',
-                    icon: 'fa-trash-o'
                 }]
             }
         },

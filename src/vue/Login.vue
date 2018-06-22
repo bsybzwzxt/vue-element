@@ -1,25 +1,28 @@
 <template>
     <div class="login">
-        <div class="login-title">后台管理系统</div>
-        <el-form :model="loginForm" ref="loginForm">
-            <el-form-item prop="username" :rules="[{required: true, message: '请输入登录名'}]">
-                <el-input placeholder="请输入登录名" v-model="loginForm.username">
+        <div class="login-title">宝尊标准商品库</div>
+        <el-form ref="loginForm">
+            <el-form-item>
+                <el-input placeholder="请输入登录名" v-model="loginForm.username"
+                          v-validate="{rule: 'required', msg: '请输入登录名'}">
                     <template slot="prepend"><i class="fa fa-lg fa-user-circle-o"></i></template>
                 </el-input>
             </el-form-item>
-            <el-form-item prop="password" :rules="[{required: true, message: '请输入登录密码'}]">
-                <el-input type="password" placeholder="请输入登录密码" v-model="loginForm.password">
+            <el-form-item>
+                <el-input type="password" placeholder="请输入登录密码" v-model="loginForm.password"
+                          v-validate="{rule: 'required', msg: '请输入登录密码'}">
                     <template slot="prepend"><i class="fa fa-lg fa-unlock-alt"></i></template>
                 </el-input>
             </el-form-item>
-            <el-form-item prop="verify" :rules="[{required: true, message: '请输入验证码'}]">
-                <el-input placeholder="请输入验证码" class="login-code" v-model="loginForm.verify">
+            <el-form-item>
+                <el-input placeholder="请输入验证码" class="login-code" v-model="loginForm.verify"
+                          v-validate="{rule: 'required', msg: '请输入验证码'}">
                     <template slot="prepend"><i class="fa fa-lg fa-ticket"></i></template>
                     <template slot="append"><img @click="getVerify" :src="verifySrc" alt="verify"/></template>
                 </el-input>
             </el-form-item>
             <div class="align-center">
-                <el-button type="primary" @click="onSubmit('loginForm')">登录</el-button>
+                <el-button type="primary" v-validate:submit="{form: 'loginForm', submit: onSubmit}">登录</el-button>
             </div>
         </el-form>
     </div>
@@ -29,28 +32,24 @@
         data() {
             return {
                 verifySrc: '',
-                loginForm: {}
+                loginForm: {username: '', password: '',verify: ''}
             }
         },
         methods: {
             getVerify() {
                 this.verifySrc = '' + '?' + Math.random();
             },
-            onSubmit(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        sessionStorage.setItem('isLogin', true);
-                        this.$router.push({path: '/index'});
-//                        this.ajax('', this.loginForm, (result) => {
-//                        });
-                    }
-                });
+            onSubmit() {
+                // this.$ajax('post', this.$api.system.login, this.loginForm, (result) => {
+                //     localStorage.setItem('token', result.token);
+                //     this.$state.user.name = result.username;
+                    this.$router.push({path: '/main/demo/table'});
+                // });
             }
         }
     }
 </script>
-<style>
-
+<style scoped>
     .login {
         position: absolute;
         top: 50%;
@@ -79,18 +78,5 @@
     .login i.fa {
         width: 20px;
         text-align: center;
-    }
-
-    /*change ElementUI input*/
-    /*.login-code .el-input-group__append {*/
-        /*height: 36px;*/
-        /*width: 100px;*/
-        /*padding: 0;*/
-        /*border: 0;*/
-        /*cursor: pointer;*/
-    /*}*/
-
-    .login .el-form-item__error {
-        margin-left: 60px;
     }
 </style>

@@ -12,7 +12,6 @@
     position: relative;
     height: 100%;
     overflow: auto;
-    background-color: #f0f2f5;
 }
 
 /*SideBar*/
@@ -133,33 +132,75 @@
     align-items: center;
 }
 
-.head-bell {
+.main-header .head-bell {
     margin-right: 30px;
     cursor: pointer;
 }
 
-.header-message {
+.main-header .header-message {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-.header-info {
+.main-header .header-info {
     white-space: nowrap;
 }
 
-.header-user {
+.main-header .header-user {
     font-size: 16px;
     line-height: 40px;
     cursor: pointer;
 }
 
-.header-user img {
+.main-header .header-user img {
     float: left;
     margin-right: 10px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
+}
+
+.main-header .notice h3 {
+    margin: 10px auto;
+}
+
+.main-header .notice h3 a {
+    float: right;
+    color: #409eff;
+    font-size: 12px;
+    line-height: 22px;
+}
+
+.main-header .notice h3 a i {
+    margin-left: 5px;
+}
+
+.main-header .notice li {
+    width: 300px;
+    padding: 10px 0;
+    line-height: 150%;
+    border-bottom: 1px solid #ebeef5;
+}
+
+.main-header .notice li:last-child {
+    border-bottom: 0;
+}
+
+.main-header .notice li:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.main-header .notice li span {
+    float: right;
+    margin-left: 20px;
+}
+
+.main-header .notice-right {
+    left: auto !important;
+    right: 0;
 }
 
 /*TabList*/

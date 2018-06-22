@@ -1,19 +1,18 @@
 <template>
     <div class="page">
         <search v-bind="search" @startSearch="startSearch" @resetSearch="resetSearch">
-            <template slot="dataRange">
-                <el-col :sm="12" :md="8" :lg="6">
-                    <label class="demonstration">默认</label>
-                    <el-date-picker v-model="value6" type="daterange" placeholder="选择日期范围"
-                                    :picker-options="pickerOptions"
-                                    value-format="yyyy-MM-dd" @focus="dateRangeChange(30)"></el-date-picker>
+            <template slot="aaa">
+                <el-col :sm="24" :md="16" :lg="12">
+                    <label>定制化</label>
+                    <el-date-picker v-model="aaa.value" type="daterange" placeholder="选择日期范围"
+                                    :picker-options="aaa.pickerOptions" value-format="yyyy-MM-dd"></el-date-picker>
                 </el-col>
             </template>
         </search>
-        <toolbar name="tableDemo" :buttons="toolbar" :tabulationKeys="tabulation.keys" :searchData="search.data"></toolbar>
+        <toolbar v-bind="toolbar" :tabulationKeys="tabulation.keys" :searchData="search.data"></toolbar>
         <tabulation v-bind="tabulation" @selection="selectionChange" @sort="setSort" :setSelectable="setSelectable">
             <template slot="pic2" slot-scope="scope">
-                <img :src="scope.row.pic2">
+                <img width="100%" :src="scope.row.pic2">
             </template>
         </tabulation>
         <pagination v-bind="pagination" :page.sync="pagination.page" @change="paginationChange"></pagination>
@@ -23,13 +22,14 @@
     export default {
         data() {
             return {
-                ensureDate: '',
-                pickerOptions: {
-                    disabledDate: this.disabledDate,
-                    onPick: this.onPick
+                aaa: {
+                    value: '',
+                    ensureDate: '',
+                    pickerOptions: {
+                        disabledDate: this.disabledDate,
+                        onPick: this.onPick
+                    }
                 },
-                value6: '',
-                rangeDate: '',
                 isCreate: true,
                 isUpdate: false,
                 dialogForm: false,
@@ -37,11 +37,11 @@
                 form: {},
                 // 表格筛选参数
                 model: {search: {}, page: {}, sort: {}},
+                selection: [],
                 tabulation: {
                     data: [],
-                    // selectable: this.aaa,
                     keys: [
-                        {key: 'pic1', label: '图片1', toggle: true, type: 'picture', pictureKey: 'src'},
+                        {key: 'pic1', label: '图片1', toggle: true, type: 'picture', width: 100},
                         {key: 'date', label: '日期', toggle: true, minWidth: '100'},
                         {key: 'pic2', label: '图片2', toggle: true, type: 'custom', slotName: 'pic2'},
                         {key: 'name', label: '姓名', sort: true, class: 'aaa', ccc: 'ccc'},
@@ -50,15 +50,26 @@
                         {key: 'phone', label: '手机号', sort: true},
                         {key: 'card', label: '银行卡号', sort: true, toggle: false}
                     ],
+                    handle: [{
+                        mode: 'dropdown', label: '预览', icon: 'fa-eye', type: 'text', callback: this.productPreview,
+                        options: [{label: '全部预览', value: 'all'}, {label: '仅预览选中', value: 'selected'}]
+                    },
+                        {mode: 'button', label: '编辑', icon: 'fa-edit', type: 'text', callback: this.handle1},
+                        {mode: 'button', label: '删除', icon: 'fa-trash', type: 'text', callback: this.handle2, access: 'delete'}
+                    ],
+                    handleWidth: 200
+                },
+                toolbar: {
+                    id: 'demoTable',
                     handle: [
-                        {label: '编辑', icon: 'fa-edit', type: 'text', callback: this.handle1},
-                        {label: '删除', icon: 'fa-trash', type: 'text', callback: this.handle2, access: 'delete'}
+                        {mode: 'button', label: '添加', icon: 'fa-plus', callback: this.batch1, access: 'allAdd'},
+                        {mode: 'button', label: '批量操作', callback: this.batch2},
+                        {
+                            mode: 'dropdown', label: '批量下载', callback: this.batchDownload,
+                            options: [{label: '全部下载', value: 'all'}, {label: '仅下载选中', value: 'selected'}]
+                        }
                     ]
                 },
-                toolbar: [
-                    {label: '添加', icon: 'fa-plus', callback: this.batch1, access: 'allAdd'},
-                    {label: '批量操作', callback: this.batch2}
-                ],
                 search: {
                     data: [{
                         type: 'compound', key: 'compound', label: '复合型搜索', toggle: true, options: [
@@ -73,26 +84,30 @@
                         }]
                     }, {
                         type: 'select', key: 'bank', label: '银行', options: [
-                            {value: true, label: "qita"},
-                            {value: '上海银行'}
-                        ]
-                    }, {
-                        type: 'multiple', key: 'multiple', label: '多选', options: [
-                            {value: 'true', label: "qita"},
-                            {value: '1', label: "aaa"},
-                            {value: '2', label: "bbb"},
+                            {value: true, label: "其他银行"},
                             {value: '上海银行'}
                         ]
                     }, {
                         type: 'input', key: 'username', label: '姓名'
                     }, {
-                        //     type: 'custom', slotName: 'dataRange'
-                        // },{
-                        type: 'daterange', key: 'startdate1,enddate1', range: 30, label: '日期范围'
+                        type: 'multipleInput', key: 'multipleInput', label: '批量输入'
                     }, {
-                        type: 'date', key: 'startdate', label: '开始日期', toggle: true
+                        type: 'multipleSelect', key: 'multipleSelect', label: '批量选择', options: [
+                            {value: 'true', label: "aaa"},
+                            {value: '1', label: "bbb"},
+                            {value: '2', label: "ccc"},
+                            {value: 'ddd'}
+                        ]
                     }, {
-                        type: 'date', key: 'enddate', label: '结束日期'
+                        type: 'custom', slotName: 'dataRange'
+                    }, {
+                        type: 'date', key: 'date', label: '日期型', toggle: true
+                    }, {
+                        type: 'dateRange', key: 'startDate,endDate', range: 30, label: '日期范围', toggle: true
+                    }, {
+                        type: 'dateTimeRange', key: 'startTime,endTime', range: 10, label: '日期时间范围', toggle: true
+                    }, {
+                        type: 'custom', slotName: 'aaa'
                     }]
                 },
                 pagination: {
@@ -130,8 +145,7 @@
                     date: '2016-05-02',
                     name: '2017-07-18 17:00:03 <br> 2017-07-18 17:00:03',
                     address: '上海市普陀区金沙江路 1518 弄',
-                    rowSelected: true,
-                    src: 'src/images/logo.jpg'
+                    pic1: 'src/images/logo.jpg'
                 }, {
                     id: 21,
                     no: '201706131701017347104347',
@@ -153,7 +167,7 @@
                 }];
             }, 2000);
 
-//            this.sendAjax();
+//            this.loadTable();
             this.pagination.total = 100;
 
         },
@@ -161,7 +175,7 @@
             setSort(sort) {
                 this.model.sort = sort;
                 console.log(sort)
-                this.sendAjax();
+                this.loadTable();
             },
             setSelectable(row) {
                 return row.name !== '王小虎2';
@@ -171,9 +185,8 @@
                     fundingType: ''
                 };
             },
-            sendAjax(data) {
-                let params = Object.assign(Object.assign(Object.assign({}, this.model.search), this.model.page), this.model.sort);
-                this.$ajax('post', 'asd', params, (result) => {
+            loadTable(data) {
+                this.$ajax('post', 'asd', this.model, (result) => {
                     this.tabulation.data = result.data;
                     this.pagination.total = result.total;
                 });
@@ -182,22 +195,23 @@
                 this.model.search = data;
                 this.pagination.page = 1;
                 this.model.page[this.pagination.pageKey] = 1;
-                this.sendAjax();
+                this.loadTable();
             },
             resetSearch() {
                 this.model.search = {};
                 this.pagination.page = 1;
                 this.model.page[this.pagination.pageKey] = 1;
-                this.sendAjax();
+                this.loadTable();
             },
             paginationChange(data) {
                 this.model.page = data;
-                this.sendAjax();
+                this.loadTable();
             },
             selectionChange(data) {
-                console.log(data)
+                console.log(data);
+                this.selection = data;
             },
-            handle1(index, row) {
+            handle1(row) {
                 // 重置Form
                 if (this.$refs['form']) {
                     this.$refs['form'].resetFields();
@@ -205,15 +219,18 @@
                 this.isCreate = false;
                 this.isUpdate = true;
                 this.dialogForm = true;
-                this.form = this.$objectExtend(this.createModel(), row);
+                this.form = this.$utils.objectExtend(this.createModel(), row);
             },
-            handle2(index, row) {
+            handle2(row) {
                 this.$confirm('确定删除吗?', '提示', {type: 'warning'}).then(() => {
                     this.$ajax('url', {}, (result) => {
                         this.$message({message: '删除成功', type: 'success'});
-                        this.sendAjax();
+                        this.loadTable();
                     });
                 }).catch(() => false);
+            },
+            productPreview(value, row) {
+                console.log(value, row)
             },
             batch1() {
                 // 重置Form
@@ -226,7 +243,7 @@
                 this.createModel();
             },
             batch2() {
-                if (this.tabulation.selection.length > 0) {
+                if (this.tabulation.length > 0) {
                     // 重置Form
                     if (this.$refs['form']) {
                         this.$refs['form'].resetFields();
@@ -236,31 +253,20 @@
                     this.isUpdate = false;
                     this.createModel();
                 } else {
-                    this.$message({message: '至少选择一项', type: 'error'});
+                    this.$message({message: '至少选择一条数据', type: 'error'});
                 }
             },
-            // 时间控制
-            dateRangeChange(value) {
-                console.log(value);
+            batchDownload() {
+                if (this.selection.length > 0) {
+                } else {
+                    this.$message({message: '至少选择一条数据', type: 'error'});
+                }
             },
             disabledDate(time) {
-                // if (this.ensureDate) {
-                //     return time.getTime() > this.ensureDate.getTime() + 86400000 * 3;
-                // } else {
-                //     return false;
-                // }
-                return this.ensureDate ? time.getTime() > this.ensureDate.getTime() + 86400000 * 3 : false
+                return this.aaa.ensureDate ? time.getTime() > this.aaa.ensureDate.getTime() + 86400000 * 3 : false
             },
             onPick(date) {
-                console.log(date);
-                console.log(this.value6);
-                // if (date.maxDate) {
-                //     this.ensureDate = '';
-                // } else {
-                //     this.ensureDate = date.minDate;
-                //     // this.disabledDate;
-                // }
-                this.ensureDate = date.maxDate ? '' : date.minDate;
+                this.aaa.ensureDate = date.maxDate ? '' : date.minDate;
             }
         }
     }
