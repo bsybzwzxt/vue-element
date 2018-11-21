@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from 'src/vuex'
+
 Vue.use(Router);
 
 import MainLayout from './main/Layout'
@@ -12,13 +14,13 @@ const route = {
     PermissionUser: resolve => require.ensure([], () => resolve(require('src/vue/permission/User')), 'vue/permission/User'),
 };
 
-export default new Router({
+const router = new Router({
     // mode: 'history',
     routes: [{
         path: '/main',
         component: MainLayout,
         children: [{
-            path: 'demo/table', component: route.DemoTable
+            path: 'demo/table', component: route.DemoTable, meta: {menuActive: 'picture-2'}
         }, {
             path: 'permission/user', component: route.PermissionUser
         }]
@@ -29,4 +31,37 @@ export default new Router({
     }, {
         path: '*', component: route.Error
     }]
-})
+});
+
+
+let accessPage = ['/main/access/user/table', '/main/access/access/table', '/main/access/role/table'];
+
+router.beforeEach((to, from, next) => {
+    // 监听权限
+    store.state.access = new Proxy(store.state.access, {
+        set: function (target, key, value) {
+            target[key] = value;
+            interceptor(key, to.path, next);
+            return true;
+        }
+    });
+    if (JSON.stringify(store.state.access) !== '{}') {
+        for (let item in store.state.access) {
+            interceptor(item, to.path, next);
+        }
+    } else {
+        next();
+    }
+});
+
+const interceptor = (access, toPath, next) => {
+    let pass = (accessPage.length === 0);
+    for (let path of accessPage) {
+        if (accessPage.indexOf(toPath) === -1 || (path === access && path === toPath)) {
+            pass = true;
+        }
+    }
+    next(pass);
+};
+
+export default router;

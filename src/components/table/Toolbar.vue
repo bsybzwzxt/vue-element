@@ -1,47 +1,56 @@
 <template>
-    <div class="toolbar">
-        <div>
-            <template v-for="item in handle" v-if="!item.access || $state.access[item.access]">
-                <el-button v-if="item.mode === 'button'" size="small" :type="item.type" :disabled="item.disabled"
-                           @click="item.callback">
-                    <i v-if="item.icon" class="fa" :class="item.icon"></i>{{item.label}}
-                </el-button>
-                <el-dropdown v-if="item.mode === 'dropdown'" @command="item.callback" size="small"
-                             placement="bottom">
-                    <el-button :type="item.type" size="small">
-                        {{item.label}}<i class="el-icon-arrow-down el-icon--right"></i>
+    <div>
+        <div class="toolbar">
+            <div>
+                <template v-for="item in handle" v-if="!item.access || $state.access[item.access]">
+                    <el-button v-if="item.mode === 'button'" size="small" :type="item.type" :disabled="item.disabled"
+                               @click="item.callback">
+                        <i v-if="item.icon" class="fa" :class="item.icon"></i>{{item.label}}
                     </el-button>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="option in item.options" :key="option.value" divided
-                                          :command="option.value">{{option.label}}
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-                <slot v-if="item.mode === 'custom' && (!item.access || $state.access[item.access])"
-                      name="item.slotName"></slot>
-            </template>
+                    <el-dropdown v-if="item.mode === 'dropdown'" @command="item.callback" size="small"
+                                 placement="bottom">
+                        <el-button :type="item.type" size="small">
+                            {{item.label}}<i class="el-icon-arrow-down el-icon--right"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-for="option in item.options" :key="option.value" divided
+                                              :command="option.value">{{option.label}}
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                    <slot v-if="item.mode === 'custom' && (!item.access || $state.access[item.access])"
+                          :name="item.slotName"></slot>
+                </template>
+            </div>
+            <div class="toolbar-expand">
+                <label v-if="upload && (!upload.access || $state.access[upload.access])"
+                       :class="{'is-active': isActive('upload'),'is-collapse': isCollapse('upload')}"
+                       @click="collapseChange('upload')">
+                    <i class="fa fa-upload"></i>导入
+                </label>
+                <label v-if="download && (!download.access || $state.access[download.access])"
+                       :class="{'is-active': isActive('download'),'is-collapse': isCollapse('download')}"
+                       @click="collapseChange('download')">
+                    <i class="fa fa-download"></i>导出
+                </label>
+                <label v-if="search && (!search.access || $state.access[search.access])"
+                       :class="{'is-active': isActive('search'),'is-collapse': isCollapse('search')}"
+                       @click="collapseChange('search')">
+                    <i class="fa fa-search"></i>搜索栏
+                </label>
+            </div>
         </div>
-        <div v-if="searchData || tabulationKeys">
-            <el-popover v-if="searchData" placement="bottom-end" trigger="click">
-                <template v-for="item in searchData" v-if="item.toggle !== undefined">
-                    <div class="toolbar-checkbox">
-                        <el-checkbox v-model="item.toggle" @change="tableSearchChange">{{item.label}}</el-checkbox>
-                    </div>
-                </template>
-                <el-button type="primary" size="small" slot="reference">设置搜索<i
-                        class="el-icon-caret-bottom el-icon--right"></i>
-                </el-button>
-            </el-popover>
-            <el-popover v-if="tabulationKeys" placement="bottom-end" trigger="click">
-                <template v-for="item in tabulationKeys" v-if="item.toggle !== undefined">
-                    <div class="toolbar-checkbox">
-                        <el-checkbox v-model="item.toggle" @change="tableKeyChange">{{item.label}}</el-checkbox>
-                    </div>
-                </template>
-                <el-button type="primary" size="small" slot="reference">设置字段<i
-                        class="el-icon-caret-bottom el-icon--right"></i>
-                </el-button>
-            </el-popover>
+        <div class="toolbar-collapse" ref="collapse">
+            <div v-show="collapseType === 'upload'">
+                <!--<slot name="upload"></slot>-->
+            </div>
+            <div v-show="collapseType === 'download'">
+                <!--<slot name="download"></slot>-->
+            </div>
+            <template v-if="search">
+                <search v-show="collapseType === 'search'" v-bind="search" @startSearch="startSearch"
+                        @resetSearch="resetSearch"></search>
+            </template>
         </div>
     </div>
 </template>
@@ -49,13 +58,26 @@
     export default {
         name: 'Toolbar',
         data() {
-            return {}
+            return {
+                collapseState: false,
+                collapseType: '',
+                transformState: false,
+                searchHeight: 0
+            }
+        },
+        computed: {
+            isActive() {
+                return (type) => {
+                    return this.collapseType === type;
+                }
+            },
+            isCollapse() {
+                return (type) => {
+                    return this.collapseType === type && !this.collapseState;
+                }
+            }
         },
         props: {
-            // 用于存储用户行为,需要储存用户行为时必填
-            id: {
-                type: String
-            },
             // handle: Array 工具条按钮组
             // |--mode: String 必填,选择模式,有button,dropdown和custom
             // |--access: String 权限Key
@@ -71,61 +93,87 @@
                     return []
                 }
             },
-            // 表格组件的keys-需设置id
-            tabulationKeys: {
-                type: Array
+            // upload: Object 导入
+            // |--access: String 权限Key
+            // |--callback: Function 回调方法
+            upload: {
+                type: Object
             },
-            // 搜索组件的data-需设置id
-            searchData: {
-                type: Array
+            // download: Object 导出
+            // |--access: String 权限Key
+            // |--callback: Function 回调方法
+            download: {
+                type: Object
+            },
+            // search: Object 搜索组件的参数
+            search: {
+                type: Object
             }
         },
         created() {
-            // 加载字段
-            if (this.id) {
-                let tableKey = JSON.parse(localStorage.getItem(this.id + 'Keys'));
-                if (tableKey) {
-                    for (let item of this.tabulationKeys) {
-                        if (item.toggle !== undefined) {
-                            item.toggle = tableKey[item.key];
-                        }
-                    }
-                }
-                // 加载搜索
-                let searchKey = JSON.parse(localStorage.getItem(this.id + 'Search'));
-                if (searchKey) {
-                    for (let item of this.searchData) {
-                        if (item.toggle !== undefined) {
-                            item.toggle = searchKey[item.key];
-                        }
-                    }
-                }
-            }
+            this.collapseType = (this.search && (!this.search.access || this.$state.access[this.search.access])) ? 'search' : ((this.download && (!this.download.access || this.$state.access[this.download.access])) ? 'download' : ((this.upload && (!this.upload.access || this.$state.access[this.upload.access])) ? 'upload' : ''));
+            console.log(this.collapseType);
+        },
+        mounted() {
+            this.searchHeight = this.$refs.collapse.offsetHeight;
         },
         methods: {
-            // 设置字段
-            tableKeyChange() {
-                let tableKey = {};
-                for (let item of this.tabulationKeys) {
-                    if (item.toggle !== undefined) {
-                        tableKey[item.key] = item.toggle;
+            collapseChange(type) {
+                // 执行回调
+                this[type].callback && this[type].callback();
+                if (this.collapseType !== type) {
+                    this.collapseType = type;
+                    return;
+                }
+                let el = this.$refs.collapse;
+                if (this.collapseState) {
+                    this.collapseState = false;
+                    el.style.display = '';
+                    if(!el.offsetHeight){
+                        return false
                     }
+                    if (!this.transformState) {
+                        this.searchHeight = el.offsetHeight;
+                    }
+                    // if (!el.style.height) {
+                    //     this.searchHeight = el.offsetHeight;
+                    // }
+                    el.style.height = '0';
+                    setTimeout(() => {
+                        el.style.height = this.searchHeight + 'px';
+                    });
+                } else {
+                    this.collapseState = true;
+                    if(!el.offsetHeight){
+                        return false
+                    }
+                    // if (!el.style.height) {
+                    //     this.searchHeight = el.offsetHeight;
+                    // }
+                    if (!this.transformState) {
+                        this.searchHeight = el.offsetHeight;
+                    }
+                    el.style.height = this.searchHeight + 'px';
+                    setTimeout(() => {
+                        el.style.height = '0';
+                    });
                 }
-                if (this.id) {
-                    localStorage.setItem(this.id + 'Keys', JSON.stringify(tableKey));
-                }
+                let transitionEnd = () => {
+                    el.style.height = '';
+                    if (this.collapseState) {
+                        el.style.display = 'none';
+                    }
+                    this.transformState = false;
+                    el.removeEventListener('transitionend', transitionEnd, false);
+                };
+                this.transformState = true;
+                el.addEventListener('transitionend', transitionEnd, false);
             },
-            // 设置搜索
-            tableSearchChange() {
-                let searchKey = {};
-                for (let item of this.searchData) {
-                    if (item.toggle !== undefined) {
-                        searchKey[item.key] = item.toggle;
-                    }
-                }
-                if (this.id) {
-                    localStorage.setItem(this.id + 'Search', JSON.stringify(searchKey));
-                }
+            startSearch(data) {
+                this.$emit('startSearch', data);
+            },
+            resetSearch() {
+                this.$emit('resetSearch');
             }
         }
     }
@@ -148,7 +196,36 @@
         margin: 1px;
     }
 
-    .toolbar .el-button .fa {
+    .toolbar .fa {
         margin-right: 5px;
+    }
+
+    .toolbar-expand {
+        user-select: none;
+    }
+
+    .toolbar-expand label {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ffffff;
+        cursor: pointer;
+    }
+
+    .toolbar-expand label.is-active {
+        border-color: #ebeef5;
+        background-color: #fafafa;
+    }
+
+    .toolbar-expand label.is-collapse {
+        color: #3366FF;
+    }
+
+    .toolbar-collapse {
+        overflow: hidden;
+        transition: height .3s linear;
+    }
+
+    .toolbar-collapse > .search {
+        padding-top: 16px;
     }
 </style>

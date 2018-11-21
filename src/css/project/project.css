@@ -1,0 +1,422 @@
+    /*.main-section {*/
+        /*top: 128px;*/
+    /*}*/
+
+    /*.main-section .page {*/
+        /*padding: 0 24px;*/
+        /*background-color: #f0f2f5;*/
+    /*}*/
+
+    /*.page-title {*/
+        /*position: fixed;*/
+        /*top: 56px;*/
+        /*right: 0;*/
+        /*left: 240px;*/
+        /*padding: 0 24px;*/
+        /*line-height: 72px;*/
+        /*font-size: 20px;*/
+        /*text-indent: 24px;*/
+        /*font-weight: bold;*/
+        /*transition: left .3s ease-in-out;*/
+        /*background-color: #f0f2f5;*/
+    /*}*/
+
+    /*.collapse .page-title {*/
+        /*left: 56px;*/
+    /*}*/
+
+    /*.page-title .fa {*/
+        /*text-indent: 0;*/
+        /*font-size: 16px;*/
+        /*padding-right: 16px;*/
+        /*margin-right: 16px;*/
+        /*border-right: 1px solid #D9D9D9;*/
+        /*cursor: pointer;*/
+    /*}*/
+
+    /*.page-block {*/
+        /*position: relative;*/
+        /*padding: 24px 32px;*/
+        /*margin-bottom: 8px;*/
+        /*box-shadow: 0 0 20px #d6d6d6;*/
+        /*background-color: #fff;*/
+    /*}*/
+
+    /*.page-block .search,*/
+    /*.page-block .toolbar,*/
+    /*.page-block .tabulation,*/
+    /*.page-block .gridding,*/
+    /*.page-block .pagination {*/
+        /*margin: 0;*/
+    /*}*/
+
+    /*.page-block .tabulation-batch {*/
+        /*padding-top: 0;*/
+    /*}*/
+
+    /*.page-block .pagination {*/
+        /*margin-top: 12px;*/
+    /*}*/
+
+    /*!*上传*!*/
+    /*.page-upload-block {*/
+        /*position: relative;*/
+        /*margin: 0 25px 16px;*/
+        /*padding: 32px 36px;*/
+        /*box-shadow: 0 0 20px #d6d6d6;*/
+        /*background-color: #fff;*/
+    /*}*/
+
+    /*.upload-part {*/
+        /*width: 100%;*/
+        /*max-width: 928px;*/
+    /*}*/
+
+    /*.upload-block .el-col {*/
+        /*line-height: 32px;*/
+    /*}*/
+
+    /*.upload-block .el-form-item {*/
+        /*margin-bottom: 10px;*/
+    /*}*/
+
+    /*.upload-block .params-part {*/
+        /*margin-left: 36px;*/
+    /*}*/
+
+    /*.upload-block h3 {*/
+        /*margin-bottom: 12px;*/
+    /*}*/
+
+    /*.upload-preview {*/
+        /*position: relative;*/
+        /*overflow: hidden;*/
+    /*}*/
+
+    /*.upload-preview .original {*/
+        /*display: block;*/
+        /*max-width: 100%;*/
+    /*}*/
+
+    /*.upload-preview .watermark {*/
+        /*position: absolute;*/
+    /*}*/
+
+    /*.el-upload__tip span {*/
+        /*font-weight: bold;*/
+        /*color: red;*/
+    /*}*/
+
+    /*.upload-part .el-form-item__label {*/
+        /*line-height: 1;*/
+        /*padding-bottom: 8px;*/
+    /*}*/
+
+    /*.upload-part .el-select , .upload-part .el-input , .upload-part .el-upload{*/
+        /*max-width: 440px;*/
+    /*}*/
+
+    /*.upload-part .el-select{*/
+        /*width: 100%;*/
+    /*}*/
+
+    /*.upload-part .el-form-item__content {*/
+        /*line-height: 1;*/
+    /*}*/
+
+    /*.upload-part .el-upload {*/
+        /*margin: 8px 0;*/
+    /*}*/
+
+    /*.upload-part .el-upload-dragger {*/
+        /*height: 220px;*/
+    /*}*/
+
+    /*.upload-part .el-form-item:last-child {*/
+        /*!*margin-bottom: 0;*!*/
+    /*}*/
+
+    /*.upload-part .fa-question-circle-o {*/
+        /*color: #BFBFBF;*/
+    /*}*/
+
+    /*.el-upload-dragger .el-icon-upload {*/
+        /*margin: 60px 0 16px;*/
+    /*}*/
+
+    /*.el-upload-dragger .fa {*/
+        /*margin: 60px 0 16px;*/
+        /*font-size: 67px;*/
+        /*color: #c0c4cc;*/
+        /*line-height: 50px;*/
+    /*}*/
+
+    /*.el-upload-dragger .el-button {*/
+        /*margin-top: 10px;*/
+    /*}*/
+
+    /*.upload-button {*/
+        /*margin: 24px 32px;*/
+    /*}*/
+
+    /*.upload-block label {*/
+        /*line-height: 2;*/
+        /*color: #606266;*/
+    /*}*/
+
+    /*!*头像上传*!*/
+    /*.avatar-uploader .el-upload {*/
+        /*width: 160px;*/
+        /*height: 160px;*/
+    /*}*/
+
+    /*.avatar-uploader .avatar-uploader-icon:hover {*/
+        /*color: #409EFF;*/
+        /*border-color: #409EFF;*/
+    /*}*/
+
+    /*.avatar-uploader .avatar-uploader-icon {*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+        /*font-size: 28px;*/
+        /*line-height: 160px;*/
+        /*color: #8c939d;*/
+        /*border-radius: 50%;*/
+        /*border: 1px dashed #d9d9d9;*/
+    /*}*/
+
+    /*.avatar-uploader img.avatar-uploader-icon {*/
+        /*border: none;*/
+    /*}*/
+
+    /*.input-with-select .el-select .el-input {*/
+        /*width: 130px;*/
+    /*}*/
+
+    /*.property-date-editor .el-date-editor.el-input {*/
+        /*width: 100%;*/
+    /*}*/
+
+    /*!*定制化表单*!*/
+    /*.custom-form {*/
+        /*position: relative;*/
+    /*}*/
+
+    /*.custom-form .el-select {*/
+        /*width: 100%;*/
+    /*}*/
+
+    /*.custom-form .flex + .flex {*/
+        /*margin-top: 12px;*/
+    /*}*/
+
+    /*.custom-form .el-checkbox-group {*/
+        /*line-height: 1;*/
+    /*}*/
+
+    /*.custom-form .el-checkbox,*/
+    /*.custom-form .el-radio {*/
+        /*margin-left: 30px;*/
+        /*line-height: 40px;*/
+        /*max-width: 100%;*/
+        /*overflow: hidden;*/
+        /*white-space: nowrap;*/
+        /*text-overflow: ellipsis;*/
+    /*}*/
+
+    /*.custom-form .flex .el-date-editor,*/
+    /*.custom-form .flex .el-select,*/
+    /*.custom-form .flex .el-radio-group,*/
+    /*.custom-form .flex .el-checkbox-group {*/
+        /*flex: 1;*/
+        /*overflow: hidden;*/
+    /*}*/
+
+    /*.custom-form .flex .el-form-item + .el-button,*/
+    /*.custom-form .flex .el-form-item + .el-form-item,*/
+    /*.custom-form .flex .el-input + .el-input,*/
+    /*.custom-form .flex .el-color-picker + .el-input,*/
+    /*.custom-form .flex .el-input + .el-button,*/
+    /*.custom-form .flex .el-select + .el-button,*/
+    /*.custom-form .flex .el-checkbox-group + .el-button,*/
+    /*.custom-form .flex .el-textarea + .el-button,*/
+    /*.custom-form .flex .el-cascader + .el-button {*/
+        /*margin-left: 20px;*/
+    /*}*/
+
+    /*.custom-form .flex .el-button {*/
+        /*padding: 10px 11px;*/
+        /*height: 40px;*/
+    /*}*/
+
+    /*.custom-form .flex .el-button i:before {*/
+        /*font-size: 16px;*/
+    /*}*/
+
+    /*!*excel表格样式*!*/
+    /*.table-excel {*/
+        /*width: 100%;*/
+        /*border-collapse: collapse;*/
+        /*text-align: center;*/
+        /*table-layout: fixed;*/
+    /*}*/
+
+    /*.table-excel th,*/
+    /*.table-excel td {*/
+        /*border: 1px solid #ccc;*/
+    /*}*/
+
+    /*.table-excel .color {*/
+        /*display: inline-block;*/
+        /*width: 15px;*/
+        /*height: 15px;*/
+        /*vertical-align: middle;*/
+    /*}*/
+
+    /*.table-excel .el-input__inner {*/
+        /*border: 0;*/
+    /*}*/
+
+    /*.table-excel .el-date-editor.el-input, .el-date-editor.el-input__inner {*/
+        /*width: 100%;*/
+    /*}*/
+
+    /*.table-excel .el-input--suffix .el-input__inner {*/
+        /*padding-right: 15px;*/
+    /*}*/
+
+    /*!*图片管理*!*/
+    /*.picture-manager .el-upload {*/
+        /*display: inline-block;*/
+    /*}*/
+
+    /*.picture-manager .el-upload-list--picture-card .el-upload-list__item-actions {*/
+        /*font-size: 32px;*/
+    /*}*/
+
+    /*.picture-dialog .el-dialog__header {*/
+        /*display: none;*/
+    /*}*/
+
+    /*.picture-dialog .el-dialog {*/
+        /*display: inline-block;*/
+        /*width: auto;*/
+    /*}*/
+
+    /*.picture-dialog .el-dialog__body {*/
+        /*display: inline-block;*/
+        /*padding: 0;*/
+    /*}*/
+
+    /*.image-item .avatar-uploader .el-upload {*/
+        /*position: relative;*/
+        /*width: 120px;*/
+        /*height: 120px;*/
+    /*}*/
+
+    /*.shop-container .el-form-item__label {*/
+        /*font-weight: bold;*/
+    /*}*/
+
+    /*.area-select-wrap .area-select {*/
+        /*line-height: 1;*/
+    /*}*/
+
+    /*.sizeMeasure-section .el-radio__input {*/
+        /*display: none;*/
+    /*}*/
+
+    /*.custom-grounding-form input.el-input__inner {*/
+        /*height: 32px;*/
+    /*}*/
+
+    /*!*图片排版*!*/
+    /*.image-layout {*/
+        /*position: relative;*/
+        /*margin: 8px -8px;*/
+        /*font-size: 12px;*/
+    /*}*/
+
+    /*.image-layout:after {*/
+        /*content: '';*/
+        /*display: table;*/
+        /*clear: both;*/
+    /*}*/
+
+    /*.image-layout > div {*/
+        /*float: left;*/
+        /*padding: 8px;*/
+        /*width: 248px;*/
+        /*box-sizing: content-box;*/
+    /*}*/
+
+    /*.image-layout-image {*/
+        /*position: relative;*/
+        /*width: 100%;*/
+        /*height: 248px;*/
+        /*border: 1px solid #ffffff;*/
+        /*background-color: #d8d8d8;*/
+        /*box-sizing: content-box;*/
+        /*display: flex;*/
+        /*justify-content: center;*/
+        /*align-items: center*/
+    /*}*/
+
+    /*.image-layout .image-layout-image:hover {*/
+        /*border-color: #3366FF;*/
+    /*}*/
+
+    /*.image-layout-image img {*/
+        /*display: block;*/
+        /*max-width: 100%;*/
+        /*max-height: 100%;*/
+    /*}*/
+
+    /*.image-layout-handle {*/
+        /*position: absolute;*/
+        /*bottom: 0;*/
+        /*width: 100%;*/
+        /*line-height: 40px;*/
+        /*color: #ffffff;*/
+        /*text-align: center;*/
+        /*background-color: rgba(0, 0, 0, .5);*/
+        /*align-items: center;*/
+        /*display: none;*/
+    /*}*/
+
+    /*.image-layout .image-layout-image:hover .image-layout-handle {*/
+        /*display: flex;*/
+    /*}*/
+
+    /*.image-layout-handle label {*/
+        /*flex: 1;*/
+        /*border-right: 1px solid #fff;*/
+        /*cursor: pointer;*/
+    /*}*/
+
+    /*.image-layout-handle label:last-child {*/
+        /*border-right: none;*/
+    /*}*/
+
+    /*.image-layout-title {*/
+        /*margin-top: 8px;*/
+        /*height: 24px;*/
+        /*line-height: 24px;*/
+        /*overflow: hidden;*/
+        /*white-space: nowrap;*/
+        /*text-overflow: ellipsis;*/
+    /*}*/
+
+    /*!*图片排版结束*!*/
+    /*!*图片列表-图片状态*!*/
+    /*.page-block .tabulation .el-tag {*/
+        /*margin-bottom: 10px;*/
+    /*}*/
+
+    /*.page-block .tabulation .el-tag:last-child {*/
+        /*margin-bottom: 0;*/
+    /*}*/
+    /*!*tabulation中的按钮间距*!*/
+    /*.batch-toolbar .el-button + .el-button{*/
+        /*margin-left: 0;*/
+    /*}*/

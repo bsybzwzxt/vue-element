@@ -1,6 +1,7 @@
 <template>
     <aside class="main-aside">
         <div class="aside-header">
+            <!--<i v-if="!isCollapse" class="sidebar-logo"></i>-->
             <label v-if="!isCollapse">{{title}}</label>
             <i class="fa fa-lg" :class="isCollapse ? 'fa-arrow-right' : 'fa-arrow-left'" @click="collapseChange"></i>
         </div>
@@ -31,7 +32,12 @@
     </aside>
 </template>
 <script>
+    import scroll from 'src/directive/scroll'
+
     export default {
+        directives: {
+            scroll
+        },
         data() {
             return {
                 isCollapse: false,
@@ -60,17 +66,20 @@
                 immediate: true,
                 handler() {
                     let path = this.$route.path;
+                    this.defaultActive = '';
                     for (let item of this.routeList) {
                         if (item.path) {
                             if (item.path === path) {
                                 this.defaultActive = item.index;
-                                return;
                             }
                         } else if (item.children) {
+                            item.access = true;
                             for (let child of item.children) {
+                                if (!child.access || this.$state.access[child.access]) {
+                                    item.access = false;
+                                }
                                 if (child.path === path) {
                                     this.defaultActive = child.index;
-                                    return;
                                 }
                                 if (child.tabs) {
                                     this.loadTabs(child);
@@ -80,6 +89,9 @@
                         if (item.tabs) {
                             this.loadTabs(item);
                         }
+                    }
+                    if (!this.defaultActive) {
+                        this.defaultActive = this.$route.meta.menuActive;
                     }
                 }
             }

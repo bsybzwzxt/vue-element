@@ -1,7 +1,7 @@
 /**
  * Created by zhangjuncheng on 2018/5/31.
  */
-// 全局工具函数
+// 框架工具函数
 exports.install = Vue => {
 
     Vue.prototype.$utils = {
@@ -75,7 +75,7 @@ exports.install = Vue => {
             return min + Math.round(Math.random() * (max - min));
         },
         // 设置select的key和value
-        selectSet: function (array, key, value) {
+        selectSet: function (array, key = 'label', value = 'value') {
             for (let item of array) {
                 item.label = item[key];
                 item.value = item[value];

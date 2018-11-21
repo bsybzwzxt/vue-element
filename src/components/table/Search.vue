@@ -1,6 +1,6 @@
 <template>
     <div class="search" v-if="!access || $state.access[access]">
-        <el-row :gutter="10">
+        <el-row :gutter="24">
             <template v-for="item in searchData">
                 <el-col :sm="12" :md="8" :lg="6" v-if="item.toggle !== false && item.type !=='custom'">
                     <template v-if="item.type==='select'">
@@ -41,7 +41,7 @@
                         <label v-if="item.label">{{item.label}}</label>
                         <el-select class="multiple-select" v-model="model[item.key]" multiple filterable collapse-tags
                                    size="small" allow-create :multiple-limit="item.limit || 0"
-                                   :placeholder="item.placeholder || '请输入'" default-first-option
+                                   :placeholder="item.placeholder || '请直接输入或粘贴'" default-first-option reserve-keyword
                                    @change="multipleInputChange(item)">
                             <el-option v-for="option in item.options" :key="option.value"
                                        :label="option.label || option.value" :value="option.value"></el-option>
@@ -59,9 +59,12 @@
                     <template v-else-if="item.type==='cascade'">
                         <label v-if="item.label">{{item.label}}</label>
                         <el-cascader :options="item.options" :placeholder="item.placeholder" v-model="model[item.key]"
-                                     change-on-select filterable clearable size="small"></el-cascader>
+                                     :props="{value: item.optionsValueKey, label: item.optionsLabelKey, children: item.optionsChildrenKey}"
+                                     :change-on-select="item.changeOnSelect" :show-all-levels="item.showAllLevels"
+                                     filterable clearable size="small"></el-cascader>
                     </template>
                     <template v-else-if="item.type==='compound'">
+                        <label v-if="item.label">{{item.label}}</label>
                         <el-input placeholder="搜索内容" v-model="compound.value" size="small">
                             <el-select v-model="compound.key" filterable clearable slot="prepend" placeholder="搜索字段"
                                        size="small">
@@ -71,11 +74,17 @@
                         </el-input>
                     </template>
                 </el-col>
-                <slot if="item.type==='custom'" :name="item.slotName"></slot>
+                <slot v-if="item.type==='custom'" :name="item.slotName"></slot>
             </template>
             <el-col :sm="12" :md="8" :lg="6">
-                <el-button type="primary" icon="el-icon-search" size="small" @click="startSearch">搜索</el-button>
-                <el-button icon="el-icon-refresh" size="small" @click="resetSearch">重置</el-button>
+                <el-popover v-if="id" placement="bottom-end" trigger="click" popper-class="search-filter">
+                    <template v-for="item in searchData" v-if="item.toggle !== undefined">
+                        <el-checkbox v-model="item.toggle" @change="setSearch">{{item.label}}</el-checkbox>
+                    </template>
+                    <el-button type="text" size="mini" slot="reference">筛选<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+                </el-popover>
+                <el-button type="default" size="mini" @click="resetSearch">重置</el-button>
+                <el-button type="primary" size="mini" @click="startSearch">搜索</el-button>
             </el-col>
         </el-row>
     </div>
@@ -93,10 +102,15 @@
                 pickerOptions: {
                     disabledDate: this.disabledDate,
                     onPick: this.onPick
-                }
+                },
+                multipleInputValue: []
             }
         },
         props: {
+            // 用户筛选行为保存id
+            id: {
+                type: String
+            },
             // 搜索权限
             access: {
                 type: String
@@ -149,6 +163,11 @@
             // |--label: String 显示文本
             // |--toggle: Boolean 搜索可以被设置,需设置key和label
             // |--placeholder String placeholder值
+            // |--changeOnSelect Boolean 是否一定要选中最后一级
+            // |--showAllLevels Boolean 是否显示所有层级
+            // |--optionsValueKey String placeholder值
+            // |--optionsLabelKey String placeholder值
+            // |--optionsChildrenKey String placeholder值
             // |--options: Array 必填,select选项
             // |----value: String 必填,供选择的值
             // |----label: String 必填,供选择值的显示文本
@@ -161,6 +180,19 @@
             }
             // @search 开始搜索钩子,返回搜索字段
             // <div slot="search"></div> 自定义搜索内容
+        },
+        created() {
+            if (this.id) {
+                // 加载搜索
+                let searchKey = JSON.parse(localStorage.getItem(this.id + 'Search'));
+                if (searchKey) {
+                    for (let item of this.searchData) {
+                        if (item.toggle !== undefined) {
+                            item.toggle = searchKey[item.key];
+                        }
+                    }
+                }
+            }
         },
         mounted() {
             this.searchData = this.data.map(item => {
@@ -235,10 +267,14 @@
                             break;
                         case 'cascade':
                             if (this.model[item.key] && item.toggle !== false) {
-                                let array = item.key.split(',');
-                                this.model[item.key].forEach((value, index) => {
-                                    data[array[index]] = value;
-                                });
+                                if (item.key.indexOf(',') > 0) {
+                                    let array = item.key.split(',');
+                                    this.model[item.key].forEach((value, index) => {
+                                        data[array[index]] = value;
+                                    });
+                                } else {
+                                    data[item.key] = this.model[item.key][this.model[item.key].length - 1];
+                                }
                             }
                             break;
                     }
@@ -277,19 +313,25 @@
                 this.ensureDate = date.maxDate ? '' : date.minDate;
             },
             multipleInputChange(selection) {
+                if (this.multipleInputValue.length < this.model[selection.key].length) {
+                    let space = [...new Set(this.model[selection.key].pop().split(' '))].filter(a => a !== '');
+                    this.model[selection.key] = [...new Set(space.concat(this.model[selection.key]))];
+                }
                 selection.options = [];
-                for (let item of this.model[selection.key]) {
-                    let space = [...new Set(item.split(' '))].filter(a => a !== '');
-                    for (let s of space) {
-                        selection.options = selection.options.filter(a => a.value !== s);
-                        selection.options.push({value: s});
-                        this.model[selection.key] = this.model[selection.key].filter(a => a !== s);
-                        this.model[selection.key].push(s);
-                    }
-                    if (item.trim().indexOf(' ') > -1) {
-                        this.model[selection.key].splice(this.model[selection.key].indexOf(item), 1);
+                this.model[selection.key].map((item) => {
+                    selection.options.push({value: item})
+                });
+                this.multipleInputValue = [...this.model[selection.key]];
+            },
+            // 设置搜索
+            setSearch() {
+                let searchKey = {};
+                for (let item of this.searchData) {
+                    if (item.toggle !== undefined) {
+                        searchKey[item.key] = item.toggle;
                     }
                 }
+                localStorage.setItem(this.id + 'Search', JSON.stringify(searchKey));
             }
         }
     }
@@ -297,27 +339,26 @@
 <style>
     .search {
         position: relative;
-        margin: 20px;
+        margin: 16px 24px;
     }
 
     /*change ElementUI*/
     .search .el-col {
-        margin: 8px auto;
-    }
-
-    .search .el-col:not(:last-child) {
-        display: flex;
-        align-items: center;
+        margin-bottom: 16px;
     }
 
     .search .el-col:last-child {
         float: right;
         text-align: right;
+        padding-top: 20px;
     }
 
     .search .el-col label {
-        width: 30%;
-        text-align: center;
+        display: block;
+        margin-bottom: 4px;
+        font-size: 12px;
+        color: #666666;
+        line-height: 16px;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -325,7 +366,7 @@
 
     .search .el-col label + .el-cascader,
     .search .el-col label + div {
-        flex: 1;
+        width: 100%;
     }
 
     .search .el-input-group__prepend {
@@ -337,17 +378,30 @@
         width: 70%;
     }
 
-    .search .multiple-select .el-select__tags > span {
-        max-width: 100%;
-        display: flex;
+    .search .el-cascader--small {
+        line-height: initial;
+    }
+
+    .search .el-cascader__label {
+        line-height: 32px;
+    }
+
+    .search .multiple-select .el-select__tags {
+        flex-wrap: nowrap;
     }
 
     .search .multiple-select .el-select__tags > input {
-        margin-left: 0;
-        width: 0 !important;
+        width: 100% !important;
+    }
+
+    .search .multiple-select .el-select__tags > span {
+        display: flex;
+        white-space: nowrap;
+        max-width: 50%;
     }
 
     .search .multiple-select .el-select__tags > span > span:first-child {
+        flex: 1;
         overflow: hidden;
         display: flex;
         align-items: baseline;
@@ -359,4 +413,27 @@
         text-overflow: ellipsis;
         flex: 1;
     }
+
+    .search .el-popover__reference {
+        margin-right: 16px;
+        color: #666666;
+    }
+
+    .search .el-popover__reference:focus,
+    .search .el-popover__reference:hover {
+        color: #3366FF;
+    }
+
+    .search-filter {
+        padding: 8px 0;
+        width: auto;
+        min-width: 120px;
+    }
+
+    .search-filter label.el-checkbox {
+        display: block;
+        margin-left: 0;
+        padding: 8px 16px;
+    }
+
 </style>

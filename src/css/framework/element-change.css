@@ -1,0 +1,134 @@
+/*loading*/
+.el-loading-mask {
+    background-color: rgba(255, 255, 255, .5);
+}
+
+.el-loading-spinner .el-loading-text {
+    color: #001529;
+}
+
+.el-loading-spinner .path {
+    stroke: #001529;
+}
+
+/*过渡修改*/
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .3s ease;
+}
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+
+/*提示*/
+.el-tooltip__popper {
+    max-width: 50%;
+}
+
+/*上传*/
+.el-upload {
+    display: block;
+}
+
+.el-upload-dragger {
+    width: 100%;
+}
+
+/*按钮组*/
+.el-button-group {
+    white-space: nowrap;
+}
+
+/*tabs的横向滚动*/
+.el-scrollbar__wrap {
+    box-sizing: content-box;
+}
+
+.el-tabs__nav-wrap.is-scrollable {
+    padding: 0 30px;
+}
+
+.el-tabs__nav-next, .el-tabs__nav-prev {
+    width: 30px;
+    line-height: 42px;
+    text-align: center;
+}
+
+.el-tabs__nav-next {
+    border-left: 1px solid #d9d9d9;
+}
+
+.el-tabs__nav-prev {
+    border-right: 1px solid #d9d9d9;
+}
+
+/*select框下拉*/
+.el-select-dropdown__item span {
+    padding-right: 20px;
+}
+
+.el-dropdown-menu--mini {
+    padding: 5px;
+}
+
+/*下拉*/
+.el-popper[x-placement^=bottom] {
+    margin-top: 5px;
+}
+
+/*表格单元格*/
+.el-table .cell {
+    line-height: 148%;
+    word-break: normal;
+}
+
+/*弹窗*/
+.el-dialog__wrapper {
+    overflow: hidden;
+}
+
+.el-dialog {
+    margin: 0 !important;
+    max-width: 90%;
+    max-height: 90%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: auto;
+}
+
+/*表单*/
+.el-select .el-input__inner {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/*操作指南*/
+.operator-guide .el-collapse-item__header {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/*!*change ElementUI timepicker*!*/
+/*.el-picker-panel,*/
+/*.el-scrollbar__wrap {*/
+/*box-sizing: content-box;*/
+/*}*/
+
+/*!*change ElementUI form*!*/
+/*.el-col .el-form-item__content {*/
+/*line-height: inherit;*/
+/*}*/
+
+/*change ElementUI BUG*/
+.el-switch__label,
+.el-switch__core .el-switch__button,
+.el-collapse-item__header__arrow,
+.el-form-item__error,
+.el-radio__inner::after,
+.el-checkbox__inner:after,
+.el-cascader .el-icon-caret-bottom,
+.el-select .el-input .el-input__icon {
+    transition: transform 0s;
+}

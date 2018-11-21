@@ -9,7 +9,7 @@
                 </el-col>
             </template>
         </search>
-        <toolbar v-bind="toolbar" :tabulationKeys="tabulation.keys" :searchData="search.data"></toolbar>
+        <!--<toolbar v-bind="toolbar" :tabulationKeys="tabulation.keys" :searchData="search.data"></toolbar>-->
         <tabulation v-bind="tabulation" @selection="selectionChange" @sort="setSort" :setSelectable="setSelectable">
             <template slot="pic2" slot-scope="scope">
                 <img width="100%" :src="scope.row.pic2">
@@ -57,7 +57,16 @@
                         {mode: 'button', label: '编辑', icon: 'fa-edit', type: 'text', callback: this.handle1},
                         {mode: 'button', label: '删除', icon: 'fa-trash', type: 'text', callback: this.handle2, access: 'delete'}
                     ],
-                    handleWidth: 200
+                    handleWidth: 200,
+                    id: 'demoTable',
+                    batch: [
+                        {mode: 'button', label: '添加', icon: 'fa-plus', callback: this.batch1, access: 'allAdd'},
+                        {mode: 'button', label: '批量操作', callback: this.batch2},
+                        {
+                            mode: 'dropdown', label: '批量下载', callback: this.batchDownload,
+                            options: [{label: '全部下载', value: 'all'}, {label: '仅下载选中', value: 'selected'}]
+                        }
+                    ]
                 },
                 toolbar: {
                     id: 'demoTable',

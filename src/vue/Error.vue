@@ -1,13 +1,24 @@
 <template>
     <div class="error">
-        <div class="error-img"><img src="src/images/error.png" alt="error"/></div>
+        <div class="error-img"><img :src="error" alt="error"/></div>
         <div class="error-title">Page not found!</div>
         <div class="error-subtitle">The page can not be viewed or does not exist</div>
         <div class="error-subtitle">Wrong address entered</div>
         <div class="error-subtitle">Page redefinition or program error</div>
     </div>
 </template>
-<style>
+<script>
+    import error from 'src/images/error.png'
+
+    export default {
+        data() {
+            return {
+                error: error
+            }
+        }
+    }
+</script>
+<style scoped>
     .error {
         position: absolute;
         top: 50%;

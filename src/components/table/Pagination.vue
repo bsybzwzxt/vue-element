@@ -86,7 +86,7 @@
 <style>
     .pagination {
         position: relative;
-        margin: 20px;
+        margin: 20px 24px;
         text-align: right;
     }
 </style>

@@ -1,7 +1,19 @@
+/*颜色框*/
+.el-color-picker.validate-error,
+/*radio框*/
+.el-radio-group.validate-error,
+/*checkbox框*/
+.el-checkbox-group.validate-error {
+    border: 1px solid;
+}
+
 input.validate-error,
 textarea.validate-error,
 .validate-error input,
-.validate-error textarea {
+.validate-error textarea,
+.el-color-picker.validate-error,
+.el-radio-group.validate-error,
+.el-checkbox-group.validate-error {
     border-color: #ff4949;
 }
 
@@ -9,7 +21,7 @@ textarea.validate-error,
     content: "*";
     color: #ff4949;
     position: absolute;
-    top: -10px;
-    left: -10px;
+    top: 5px;
+    right: -15px;
     font-size: 20px;
 }

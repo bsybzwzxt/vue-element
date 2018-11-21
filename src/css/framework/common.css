@@ -8,7 +8,8 @@ body, html {
     height: 100%;
     width: 100%;
     font-size: 14px;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    color: #333333;
+    font-family: 'PingFangSC', 'Microsoft YaHei', 'Arial', sans-serif;
 }
 
 ul {
@@ -52,9 +53,25 @@ textarea {
 }
 
 .break-all {
-    word-break: break-all
+    word-break: break-all;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.none {
+    display: none;
 }
 
 .flex {
     display: flex;
+}
+
+.flex1 {
+    flex: 1;
+}
+
+.red {
+    color: red;
 }

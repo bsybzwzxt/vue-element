@@ -1,23 +1,19 @@
 /**
  * Created by zhangjuncheng on 2018/5/18.
  */
-// 全局混合
-import mixin from './mixin';
-// 全局工具类
-import utils from './utils';
-// 全局函数
-import custom from './custom';
+// 框架js
+import utils from './framework/utils';
+import custom from './framework/custom';
+
+// 项目类
 // 接口地址
-import api from './api';
+import api from './project/api';
 
 exports.install = Vue => {
-    // 加载全局混合
-    Vue.use(mixin);
-    // 加载全局工具类
+    // 加载框架js
     Vue.use(utils);
-    // 加载全局函数
     Vue.use(custom);
-    // 加载接口地址
+    // 加载项目js
     Vue.use(api);
 };
 
