@@ -50,8 +50,6 @@
                         <i v-if="!loginParams.isLogin" class="fa fa-arrow-right"></i></el-button>
                 </div>
             </div>
-
-
         </div>
     </div>
 </template>
@@ -101,37 +99,32 @@
         },
         methods: {
             onSubmit() {
-                this.$router.push({path: '/main/index'});
-
-                // if (!this.loginForm.username.trim()) {
-                //     this.loginParams.usernameError = true;
-                //     return;
-                // }
-                // if (!this.loginForm.password.trim()) {
-                //     this.loginParams.passwordError = true;
-                //     return;
-                // }
-                // this.loginParams.isLogin = true;
-                // this.$axios({
-                //     method: "post",
-                //     url: this.$api.system.login,
-                //     data: this.loginForm
-                // }).then(response => {
-                //     this.loginParams.isLogin = false;
-                //     if (response.data.code === 0) {
-                //         localStorage.setItem('token', response.data.data.token);
-                //         this.$state.user.name = response.data.data.name;
-                //         this.$state.user.avatar = response.data.data.avatar;
-                //         this.$state.user.account = response.data.data.username;
-                //         // this.$state.access = response.data.data.access;
-                //         this.$router.push({path: '/main/index'});
-                //     } else {
-                //         this.loginParams.errorMsg = response.data.msg || '登录失败，请稍后重试';
-                //         this.loginParams.error = true;
-                //     }
-                // }).catch(error => {
-                //     this.$message({message: '登录失败,请稍后重试', type: 'error'});
-                // });
+                if (!this.loginForm.username.trim()) {
+                    this.loginParams.usernameError = true;
+                    return;
+                }
+                if (!this.loginForm.password.trim()) {
+                    this.loginParams.passwordError = true;
+                    return;
+                }
+                this.loginParams.isLogin = true;
+                this.$axios({
+                    method: "post",
+                    url: this.$api.system.login,
+                    data: this.loginForm
+                }).then(response => {
+                    this.loginParams.isLogin = false;
+                    if (response.data.code === 0) {
+                        localStorage.setItem('token', response.data.data.token);
+                        this.$store.commit('user/setUserInfo', response.data.data);
+                        this.$router.push({path: '/main/index'});
+                    } else {
+                        this.loginParams.errorMsg = response.data.msg || '登录失败，请稍后重试';
+                        this.loginParams.error = true;
+                    }
+                }).catch(error => {
+                    this.$message({message: '登录失败,请稍后重试', type: 'error'});
+                });
             }
         }
     }

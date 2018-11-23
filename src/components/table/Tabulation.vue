@@ -17,7 +17,7 @@
             </template>
             <el-table-column v-if="handle" label="操作" align="center" :width="handleWidth" :fixed="handleFixed">
                 <template slot-scope="scope">
-                    <template v-for="item in handle" v-if="!item.access || $state.access[item.access]">
+                    <template v-for="item in handle" v-if="!item.access || $state.user.access[item.access]">
                         <el-button v-if="item.mode === 'button' && (!item.display || scope.row[item.display])" size="mini" :type="item.type"
                                    :disabled="(item.disabled && scope.row[item.disabled])"
                                    @click="item.callback(scope.row, scope.$index, scope.column)">

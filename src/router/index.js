@@ -11,7 +11,10 @@ const route = {
     Login: resolve => require.ensure([], () => resolve(require('src/vue/Login')), 'vue/Login'),
     Error: resolve => require.ensure([], () => resolve(require('src/vue/Error')), 'vue/Error'),
     DemoTable: resolve => require.ensure([], () => resolve(require('src/vue/demo/Table')), 'vue/demo/Table'),
-    PermissionUser: resolve => require.ensure([], () => resolve(require('src/vue/permission/User')), 'vue/permission/User'),
+    // 权限控制
+    AccessAccessTable: resolve => require.ensure([], () => resolve(require('src/vue/access/AccessTable')), 'vue/access/AccessTable'),
+    AccessRoleTable: resolve => require.ensure([], () => resolve(require('src/vue/access/RoleTable')), 'vue/access/RoleTable'),
+    AccessUserTable: resolve => require.ensure([], () => resolve(require('src/vue/access/UserTable')), 'vue/access/UserTable'),
 };
 
 const router = new Router({
@@ -20,9 +23,14 @@ const router = new Router({
         path: '/main',
         component: MainLayout,
         children: [{
-            path: 'demo/table', component: route.DemoTable, meta: {menuActive: 'picture-2'}
+            path: 'demo/table', component: route.DemoTable
         }, {
-            path: 'permission/user', component: route.PermissionUser
+            // 权限控制
+            path: 'access/access/table', component: route.AccessAccessTable
+        }, {
+            path: 'access/role/table', component: route.AccessRoleTable
+        }, {
+            path: 'access/user/table', component: route.AccessUserTable
         }]
     }, {
         path: '/login', component: route.Login
@@ -38,15 +46,15 @@ let accessPage = ['/main/access/user/table', '/main/access/access/table', '/main
 
 router.beforeEach((to, from, next) => {
     // 监听权限
-    store.state.access = new Proxy(store.state.access, {
+    store.state.user.access = new Proxy(store.state.user.access, {
         set: function (target, key, value) {
             target[key] = value;
             interceptor(key, to.path, next);
             return true;
         }
     });
-    if (JSON.stringify(store.state.access) !== '{}') {
-        for (let item in store.state.access) {
+    if (JSON.stringify(store.state.user.access) !== '{}') {
+        for (let item in store.state.user.access) {
             interceptor(item, to.path, next);
         }
     } else {

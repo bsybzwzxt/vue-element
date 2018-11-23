@@ -1,5 +1,5 @@
 <template>
-    <div class="search" v-if="!access || $state.access[access]">
+    <div class="search" v-if="!access || $state.user.access[access]">
         <el-row :gutter="24">
             <template v-for="item in searchData">
                 <el-col :sm="12" :md="8" :lg="6" v-if="item.toggle !== false && item.type !=='custom'">

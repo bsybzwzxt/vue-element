@@ -4,27 +4,17 @@ import {mapState} from 'vuex'
 
 Vue.use(Vuex);
 
+import user from './framework/user'
+import layout from './framework/layout'
+import project from './project/project'
+
 export default new Vuex.Store({
-    state: {
-        loading: false,
-        // 用户信息
-        user: {
-            account: '',
-            name: '',
-            avatar: ''
-        },
-        // 用户权限
-        access: {}
-    },
-    mutations: {
-        // 更改用户权限
-        setAccess(state, params) {
-            for (let item of params.accessList) {
-                state.access[item[params.key]] = true;
-            }
-        }
+    modules: {
+        user,
+        layout,
+        project
     }
-});
+})
 
 // vuex状态全局混合
 Vue.use(Vue => {

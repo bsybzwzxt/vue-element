@@ -4,7 +4,7 @@
             <template slot="aaa">
                 <el-col :sm="24" :md="16" :lg="12">
                     <label>定制化</label>
-                    <el-date-picker v-model="aaa.value" type="daterange" placeholder="选择日期范围"
+                    <el-date-picker v-model="aaa.value" type="daterange" placeholder="选择日期范围" size="small"
                                     :picker-options="aaa.pickerOptions" value-format="yyyy-MM-dd"></el-date-picker>
                 </el-col>
             </template>

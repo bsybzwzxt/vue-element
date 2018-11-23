@@ -2,12 +2,12 @@
     <transition name="fade">
         <div class="main-tabs" :class="tabs2.length > 0 && 'tab'" v-if="tabs1.length > 0">
             <el-tabs v-model="tabs1Active" type="border-card" @tab-click="tabs1Click()">
-                <template v-for="item in tabs1" v-if="!item.access || $state.access[item.access]">
+                <template v-for="item in tabs1" v-if="!item.access || $state.user.access[item.access]">
                     <el-tab-pane :lazy="true" :label="item.name" :name="item.name"></el-tab-pane>
                 </template>
             </el-tabs>
             <!--<el-tabs v-if="tabs2.length > 0" v-model="tabs2Active" @tab-click="tabs2Click()">-->
-                <!--<template v-for="item in tabs2" v-if="!item.access || $state.access[item.access]">-->
+                <!--<template v-for="item in tabs2" v-if="!item.access || $state.user.access[item.access]">-->
                     <!--<el-tab-pane :lazy="true" :label="item.name" :name="item.name"></el-tab-pane>-->
                 <!--</template>-->
             <!--</el-tabs>-->

@@ -29,25 +29,19 @@
 
 .main-aside .aside-header {
     position: relative;
-    height: 56px;
+    line-height: 56px;
     color: #ffffff;
-    /*border-bottom: 1px solid #595e62;*/
-    background-color: #262a39;
-}
-.main-aside .aside-header .sidebar-logo{
-    margin-left: 8px;
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-    background: url("../../images/login/logo.png") no-repeat;
-    background-size: 100% 100%;
 }
 
-.main-aside .aside-header label {
-    margin-left: 8px;
-    font-size: 15px;
+.main-aside .aside-header .sidebar-logo {
+    display: inline-block;
+    width: 56px;
+    height: 56px;
     line-height: 56px;
+    text-align: center;
+    vertical-align: middle;
+    background: url("../../images/login/logo.png") no-repeat 50% 50%;
+    background-size: 50% 50%;
 }
 
 .main-aside .aside-header i.fa {
@@ -74,7 +68,6 @@
 }
 
 .main-layout .el-menu {
-    padding: 16px 0;
     width: 240px;
     border-right: none;
     background-color: inherit;
@@ -90,7 +83,7 @@
 }
 
 /*.main-layout .el-menu li {*/
-    /*border-bottom: 1px solid #595e62;*/
+/*border-bottom: 1px solid #595e62;*/
 /*}*/
 
 .main-layout .el-submenu .el-menu-item {
@@ -111,7 +104,7 @@
 .main-layout .el-menu-item,
 .main-layout .el-submenu__title {
     padding: 0 16px !important;
-    color: rgba(255,255,255,0.60);
+    color: rgba(255, 255, 255, 0.60);
 }
 
 .main-layout .el-menu-item:hover,
@@ -146,15 +139,15 @@
     display: none;
 }
 
-.main-layout.collapse .main-aside {
+.main-layout.collapsed .main-aside {
     width: 56px;
 }
 
-.main-layout.collapse .main-header {
+.main-layout.collapsed .main-header {
     left: 56px;
 }
 
-.main-layout.collapse .main-section {
+.main-layout.collapsed .main-section {
     left: 56px;
 }
 
@@ -174,31 +167,37 @@
     z-index: 1;
 }
 
+.main-header i {
+    width: 56px;
+    line-height: 56px;
+    font-size: 24px;
+    color: #666666;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.main-header i:hover,
+.main-header i.active {
+    background-color: #F5F5F5;
+}
+
 .header-menu {
+    font-size: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex: 1;
 }
 
-.header-menu i {
-    width: 56px;
-    line-height: 56px;
-    font-size: 24px;
-    text-align: center;
-    vertical-align: middle;
+.header-menu > div:first-child {
+    border-right: 1px solid #E8E8E8;
 }
 
-/*.main-header .head-bell,.main-header .head-question {*/
-    /*margin-right: 30px;*/
-    /*cursor: pointer;*/
-/*}*/
-
-/*.main-header .header-info {*/
-    /*white-space: nowrap;*/
-    /*display: flex;*/
-    /*align-items: center;*/
-/*}*/
+.header-menu .el-badge__content.is-fixed {
+    top: 12px;
+    right: 28px;
+}
 
 .main-header .header-user {
     border-left: 1px solid #E8E8E8;
@@ -218,57 +217,55 @@
     height: 56px;
 }
 
+.main-header .header-user i {
+    float: right;
+    background-color: #F5F5F5;
+}
+
 .header-user-dropdown {
     width: 200px;
 }
 
-/*.main-header .fa-2x{*/
-    /*font-size: 1.6em;*/
-    /*color: #666;*/
-/*}*/
+.header-menu-notice {
+    width: 320px;
+}
 
-.header-info-notice .notice h3 {
+.header-menu-notice h3 {
     margin: 10px auto;
 }
 
-.header-info-notice .notice h3 a {
+.header-menu-notice h3 a {
     float: right;
     color: #409eff;
     font-size: 12px;
     line-height: 22px;
 }
 
-.header-info-notice .notice h3 a i {
+.header-menu-notice h3 a i {
     margin-left: 5px;
 }
 
-.header-info-notice .notice li {
-    width: 300px;
+.header-menu-notice li {
     padding: 10px 0;
     line-height: 150%;
     border-bottom: 1px solid #ebeef5;
     word-break: break-all;
 }
 
-.header-info-notice .notice li:last-child {
+.header-menu-notice li:last-child {
     border-bottom: 0;
 }
 
-.header-info-notice .notice li:after {
+.header-menu-notice li:after {
     content: '';
     display: table;
     clear: both;
 }
 
-.header-info-notice .notice li span {
+.header-menu-notice li span {
     float: right;
     margin-left: 20px;
 }
-
-/*.header-info-notice.notice-right {*/
-    /*left: auto !important;*/
-    /*right: 0;*/
-/*}*/
 
 /*TabList*/
 .main-tabs {

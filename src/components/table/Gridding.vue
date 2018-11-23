@@ -11,7 +11,7 @@
                     <div class="gridding-image" @click="selectionChange(item)" slot="reference">
                         <img :src="item[srcKey]" alt="alt"/>
                         <div class="gridding-handle" v-if="handle">
-                        <span v-for="i in handle" v-if="(!i.access || $state.access[i.access]) && (!i.display || item[i.display])"
+                        <span v-for="i in handle" v-if="(!i.access || $state.user.access[i.access]) && (!i.display || item[i.display])"
                               @click="handleCallback(item, i)">
                             <i v-if="i.icon" class="fa fa-lg" :class="i.icon"></i>{{i.label}}
                         </span>

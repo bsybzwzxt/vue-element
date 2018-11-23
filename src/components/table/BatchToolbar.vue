@@ -3,7 +3,7 @@
         <div>
             <template v-if="batch">
                 <label>批量操作：</label>
-                <template v-for="item in batch" v-if="!item.access || $state.access[item.access]">
+                <template v-for="item in batch" v-if="!item.access || $state.user.access[item.access]">
                     <el-button v-if="item.mode === 'button'" size="mini" :type="item.type" :disabled="item.disabled" @click="item.callback">
                         <i v-if="item.icon" class="fa" :class="item.icon"></i>{{item.label}}
                     </el-button>
@@ -16,7 +16,7 @@
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <slot v-if="item.mode === 'custom' && (!item.access || $state.access[item.access])" :name="item.slotName"></slot>
+                    <slot v-if="item.mode === 'custom' && (!item.access || $state.user.access[item.access])" :name="item.slotName"></slot>
                 </template>
                 <label class="batch-selection">已选择：<span>{{selection.length}}</span> 项</label>
             </template>

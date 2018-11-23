@@ -11,7 +11,7 @@ exports.install = Vue => {
     // 请求数据
     Vue.prototype.$ajax = function (method, url, params, success, error) {
         let token = localStorage.getItem('token');
-        this.$state.loading = true;
+        this.$state.layout.loading = true;
         let options = {
             method: method,
             url: url,
@@ -22,7 +22,7 @@ exports.install = Vue => {
             options.params = params;
         }
         axios(options).then(response => {
-            this.$state.loading = false;
+            this.$state.layout.loading = false;
             if (response.data.code === 0) {
                 success && success(response.data.data);
             } else {
@@ -33,7 +33,7 @@ exports.install = Vue => {
                 }
             }
         }).catch((error) => {
-            this.$state.loading = false;
+            this.$state.layout.loading = false;
             if (error.response) {
                 this.$message({message: error.response.status + error.response.statusText, type: 'error'});
                 if (error.response.status === 401) {

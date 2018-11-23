@@ -1,20 +1,21 @@
 <template>
     <aside class="main-aside">
         <div class="aside-header">
-            <!--<i v-if="!isCollapse" class="sidebar-logo"></i>-->
-            <label v-if="!isCollapse">{{title}}</label>
-            <i class="fa fa-lg" :class="isCollapse ? 'fa-arrow-right' : 'fa-arrow-left'" @click="collapseChange"></i>
+            <i class="sidebar-logo"></i>
+            <label v-if="!collapsed">{{title}}</label>
+            <!--<i class="fa fa-lg" :class="collapsed ? 'fa-arrow-right' : 'fa-arrow-left'"-->
+               <!--@click="$state.layout.sidebarCollapsed = !$state.layout.sidebarCollapsed"></i>-->
         </div>
         <div class="scroll-layer">
-            <el-menu v-scroll :default-active="defaultActive" :unique-opened="true" :collapse="isCollapse"
+            <el-menu v-scroll :default-active="defaultActive" :unique-opened="true" :collapse="collapsed"
                      :router="true">
-                <template v-for="item in routeList" v-if="!item.access || $state.access[item.access]">
+                <template v-for="item in routeList" v-if="!item.access || $state.user.access[item.access]">
                     <el-submenu v-if="item.children && item.children.length > 0" :index="item.index">
                         <template slot="title">
                             <i class="fa fa-lg fa-fw" :class="item.icon"></i>
                             <span>{{item.name}}</span>
                         </template>
-                        <template v-for="child in item.children" v-if="!child.access || $state.access[child.access]">
+                        <template v-for="child in item.children" v-if="!child.access || $state.user.access[child.access]">
                             <el-menu-item :route="{path: child.path}" :index="child.index">
                                 <i class="fa fa-lg fa-fw" :class=child.icon></i>
                                 <span>{{child.name}}</span>
@@ -40,7 +41,7 @@
         },
         data() {
             return {
-                isCollapse: false,
+                collapsed: false,
                 defaultActive: ''
             }
         },
@@ -54,18 +55,19 @@
                 required: true
             }
         },
-        created() {
-            // 是否折叠
-            if (localStorage.getItem('isCollapse') !== null) {
-                this.isCollapse = JSON.parse(localStorage.getItem('isCollapse'));
-            }
-            this.classChange();
-        },
         watch: {
+            '$state.layout.sidebarCollapsed': {
+                immediate: true,
+                handler(value) {
+                    this.collapsed = value;
+                    localStorage.setItem('sidebarCollapsed', value);
+                    this.classChange(this.collapsed);
+                }
+            },
             $route: {
                 immediate: true,
-                handler() {
-                    let path = this.$route.path;
+                handler(value) {
+                    let path = value.path;
                     this.defaultActive = '';
                     for (let item of this.routeList) {
                         if (item.path) {
@@ -75,7 +77,7 @@
                         } else if (item.children) {
                             item.access = true;
                             for (let child of item.children) {
-                                if (!child.access || this.$state.access[child.access]) {
+                                if (!child.access || this.$state.user.access[child.access]) {
                                     item.access = false;
                                 }
                                 if (child.path === path) {
@@ -91,7 +93,7 @@
                         }
                     }
                     if (!this.defaultActive) {
-                        this.defaultActive = this.$route.meta.menuActive;
+                        this.defaultActive = value.meta.menuActive;
                     }
                 }
             }
@@ -115,21 +117,16 @@
                     }
                 }
             },
-            collapseChange() {
-                this.isCollapse = !this.isCollapse;
-                localStorage.setItem('isCollapse', this.isCollapse);
-                this.classChange();
-            },
-            classChange() {
+            classChange(value) {
                 let bodyClass = document.body.className.split(' ');
                 for (let item of bodyClass) {
-                    if (!this.isCollapse && item.indexOf('collapse') !== -1) {
+                    if (!value && item.indexOf('collapsed') !== -1) {
                         if (bodyClass.indexOf(item) > -1) {
                             bodyClass.splice(bodyClass.indexOf(item), 1);
                         }
                     }
-                    if (this.isCollapse && item.indexOf('collapse') === -1) {
-                        bodyClass.push('collapse');
+                    if (value && item.indexOf('collapsed') === -1) {
+                        bodyClass.push('collapsed');
                     }
                 }
                 document.body.className = bodyClass.join(' ').trim();

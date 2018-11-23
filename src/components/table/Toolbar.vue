@@ -2,7 +2,7 @@
     <div>
         <div class="toolbar">
             <div>
-                <template v-for="item in handle" v-if="!item.access || $state.access[item.access]">
+                <template v-for="item in handle" v-if="!item.access || $state.user.access[item.access]">
                     <el-button v-if="item.mode === 'button'" size="small" :type="item.type" :disabled="item.disabled"
                                @click="item.callback">
                         <i v-if="item.icon" class="fa" :class="item.icon"></i>{{item.label}}
@@ -18,22 +18,22 @@
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <slot v-if="item.mode === 'custom' && (!item.access || $state.access[item.access])"
+                    <slot v-if="item.mode === 'custom' && (!item.access || $state.user.access[item.access])"
                           :name="item.slotName"></slot>
                 </template>
             </div>
             <div class="toolbar-expand">
-                <label v-if="upload && (!upload.access || $state.access[upload.access])"
+                <label v-if="upload && (!upload.access || $state.user.access[upload.access])"
                        :class="{'is-active': isActive('upload'),'is-collapse': isCollapse('upload')}"
                        @click="collapseChange('upload')">
                     <i class="fa fa-upload"></i>导入
                 </label>
-                <label v-if="download && (!download.access || $state.access[download.access])"
+                <label v-if="download && (!download.access || $state.user.access[download.access])"
                        :class="{'is-active': isActive('download'),'is-collapse': isCollapse('download')}"
                        @click="collapseChange('download')">
                     <i class="fa fa-download"></i>导出
                 </label>
-                <label v-if="search && (!search.access || $state.access[search.access])"
+                <label v-if="search && (!search.access || $state.user.access[search.access])"
                        :class="{'is-active': isActive('search'),'is-collapse': isCollapse('search')}"
                        @click="collapseChange('search')">
                     <i class="fa fa-search"></i>搜索栏
@@ -111,7 +111,7 @@
             }
         },
         created() {
-            this.collapseType = (this.search && (!this.search.access || this.$state.access[this.search.access])) ? 'search' : ((this.download && (!this.download.access || this.$state.access[this.download.access])) ? 'download' : ((this.upload && (!this.upload.access || this.$state.access[this.upload.access])) ? 'upload' : ''));
+            this.collapseType = (this.search && (!this.search.access || this.$state.user.access[this.search.access])) ? 'search' : ((this.download && (!this.download.access || this.$state.user.access[this.download.access])) ? 'download' : ((this.upload && (!this.upload.access || this.$state.user.access[this.upload.access])) ? 'upload' : ''));
             console.log(this.collapseType);
         },
         mounted() {
