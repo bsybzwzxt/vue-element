@@ -1,7 +1,7 @@
 <template>
     <div>
         <top-bar></top-bar>
-        <side-bar :routeList="routeList" title="BAOZUN - SpeeDraw"></side-bar>
+        <side-bar :routeList="routeList" title="后台管理"></side-bar>
         <section class="main-section">
             <tab-list :routeList="routeList"></tab-list>
             <transition name="fade" mode="out-in">

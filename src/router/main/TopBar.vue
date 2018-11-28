@@ -2,7 +2,7 @@
     <header class="main-header">
         <div class="header-menu">
             <div>
-                <i class="fa" :class="$state.layout.sidebarCollapsed ? 'fa-indent' : 'fa-outdent'"
+                <i class="fa" :class="$state.layout.sidebarCollapsed ? 'fa-arrow-right' : 'fa-arrow-left'"
                    @click="$state.layout.sidebarCollapsed = !$state.layout.sidebarCollapsed"></i>
                 <router-link to="/main/index">
                     <i class="fa fa-dashboard" :class="$route.path === '/main/index' ? 'active' : ''"></i>
@@ -21,12 +21,10 @@
                         </h3>
                         <ul>
                             <li v-for="item in notice.data">
-                                <p v-if="item.status === 'NEW'" class="red">new~</p>
+                                <p v-if="item.status === 'new'" class="red">new~</p>
                                 {{item.title}}
-                                <el-button type="text" size="mini" @click="download(item)"
-                                           v-if="item.msgType === 'screenshot_finished' || item.msgType === 'imagehandle_finished'">下载
-                                </el-button>
-                                <span>{{item.updatedDate}}</span>
+                                <el-button type="text" size="mini" @click="download(item)" v-if="item.type === 'finish'">点击下载</el-button>
+                                <span>{{item.date}}</span>
                             </li>
                         </ul>
                     </div>
@@ -44,83 +42,56 @@
                 <i v-else class="fa fa-user"></i>
             </div>
             <el-dropdown-menu slot="dropdown" class="header-user-dropdown">
-                <el-dropdown-item command="person">个人中心</el-dropdown-item>
+                <el-dropdown-item command="personal">个人中心</el-dropdown-item>
                 <el-dropdown-item command="updatePassword">修改密码</el-dropdown-item>
                 <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
-        <!--<passwordForm v-if="passwordFormParams.visible" :visible.sync="passwordFormParams.visible"></passwordForm>-->
+        <password-form v-if="passwordFormParams.visible" :visible.sync="passwordFormParams.visible"></password-form>
+        <personal-info v-if="PersonalInfoParams.visible" :visible.sync="PersonalInfoParams.visible"></personal-info>
     </header>
 </template>
 <script>
-    // import PasswordForm from "src/vue/personal/PasswordForm";
+    import PasswordForm from "src/vue/personal/PasswordForm";
+    import PersonalInfo from "src/vue/personal/PersonalInfo";
 
     export default {
-        // components: {PasswordForm: PasswordForm},
+        components: {PasswordForm, PersonalInfo},
         data() {
             return {
                 timeout: '',
                 passwordFormParams: {
                     visible: false
                 },
+                PersonalInfoParams: {
+                    visible: false
+                },
                 notice: {
                     visible: false,
                     count: 0,
-                    data: []
+                    data: [{
+                        type: 'finish',
+                        status: 'new',
+                        title: '任务已完成',
+                        date: '2018-11-26'
+                    }, {
+                        status: 'new',
+                        title: '正在执行任务',
+                        date: '2018-11-26'
+                    }, {
+                        title: '上次任务',
+                        date: '2018-10-26'
+                    }]
                 }
             }
         },
-        mounted() {
-            this.getNews();
-            this.timeout = setInterval(this.getNews, 10000);
-        },
-        destroyed() {
-            clearInterval(this.timeout);
-        },
         methods: {
-            getNews() {
-                let token = localStorage.getItem('token');
-                this.$axios({
-                    method: 'get',
-                    url: this.$api.system.newMessage,
-                    headers: {Authorization: 'Bearer ' + token}
-                }).then(response => {
-                    // if (this.notice.count < response.data) {
-                    //     this.$notify({
-                    //         title: '新消息提醒',
-                    //         dangerouslyUseHTMLString: true,
-                    //         message: `<a @click.native="checkClose()">请点击查看<i class="fa fa-chevron-right"></i></a>`
-                    //     });
-                    // }
-                    this.notice.count = response.data.code === 0 ? response.data.data : 0;
-
-                }).catch(error => {
-                    if (error.response && error.response.status === 401) {
-                        this.$router.push({path: '/login'});
-                    }
-                });
-            },
             noticeShow() {
-                this.$ajax('get', this.$api.system.notifications, {}, result => {
-                    this.notice.count = 0;
-                    this.notice.data = result.docs;
-                    for (let item of this.notice.data) {
-                        item.updatedDate = this.$utils.dateFormat(new Date(item.updatedTime), 'yyyy-MM-dd hh:mm:ss');
-                    }
-                    this.$ajax('put', this.$api.system.notifications, {}, () => {
-                    });
-                });
-            },
-            checkClose() {
-                this.$ajax('put', this.$api.system.notifications, {}, () => {
-                });
-                // this.notice.count = "";
-                // this.$router.push({path:'/main/personal/notice/table'})
             },
             handleCommand(command) {
                 switch (command) {
-                    case 'person':
-                        this.$router.push('/main/personal/info');
+                    case 'personal':
+                        this.PersonalInfoParams.visible = true;
                         break;
                     case 'updatePassword':
                         this.passwordFormParams.visible = true;
@@ -139,19 +110,7 @@
                 }).catch(() => false);
             },
             download(item) {
-                let url = '';
-                let data = {};
-                if (item.msgType === 'screenshot_finished') {
-                    url = this.$api.product.download;
-                    data = {articles: item.content.split(',')};
-                }
-                if (item.msgType === 'imagehandle_finished') {
-                    url = '/api/image-tools/download-image';
-                    data = {id: item.content};
-                }
-                this.$ajax('post', url, data, result => {
-                    window.location.href = result;
-                });
+                window.location.href = item;
             }
         }
     };
