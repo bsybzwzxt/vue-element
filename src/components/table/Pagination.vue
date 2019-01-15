@@ -1,13 +1,7 @@
 <template>
     <div class="pagination">
-        <el-pagination
-                @size-change="sizeChange"
-                @current-change="currentChange"
-                :current-page.sync='currentPage'
-                :page-sizes='sizes'
-                :page-size='size || sizes[0]'
-                :layout='layout'
-                :total='total'>
+        <el-pagination @size-change="sizeChange" @current-change="currentChange" :current-page='model[pageKey]'
+                       :page-sizes='sizes' :page-size='model[sizeKey]' :layout='layout' :total='total'>
         </el-pagination>
     </div>
 </template>
@@ -16,20 +10,19 @@
         name: 'Pagination',
         data() {
             return {
-                model: {},
-                currentPage: this.page
+                model: {}
             }
         },
         props: {
             // 数据总数
             total: {
                 type: Number,
-                required: true
+                default: 10000
             },
             // 当前页码
             page: {
                 type: Number,
-                required: true
+                default: 1
             },
             // 当前分页规格
             size: {
@@ -48,35 +41,31 @@
             // 返回当前页码的key
             pageKey: {
                 type: String,
-                required: true
+                default: 'page'
             },
             // 返回当前分页规格的key
             sizeKey: {
                 type: String,
-                required: true
+                default: 'size'
             }
             // @change: 分页组件变化时回调,返回分页page,size参数
         },
-        watch: {
-            page: {
-                handler(value) {
-                    this.currentPage = value;
-                }
-            }
-        },
-        created() {
-            this.model[this.pageKey] = this.page;
-            this.model[this.sizeKey] = this.size || this.sizes[0];
+        mounted() {
+            this.model[this.sizeKey] = this.$state.table.data.size || this.size || this.sizes[0];
+            this.model[this.pageKey] = this.$state.table.data.page || this.page;
         },
         methods: {
             // 分页规格变化时,如果带动页码变化,会触发一次currentChange
             sizeChange(value) {
                 this.model[this.sizeKey] = value;
-                this.currentChange(1);
+                this.$store.commit('table/setTableSize', value);
+                this.$emit('update:size', value);
+                this.currentChange(this.model[this.pageKey]);
             },
             // 当前页码变化
             currentChange(value) {
                 this.model[this.pageKey] = value;
+                this.$store.commit('table/setTablePage', value);
                 this.$emit('update:page', value);
                 this.$emit('change', this.model);
             }

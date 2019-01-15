@@ -1,15 +1,15 @@
 <template>
     <div class="page">
-        <search v-bind="search" @startSearch="startSearch" @resetSearch="resetSearch">
-            <template slot="aaa">
-                <el-col :sm="24" :md="16" :lg="12">
-                    <label>定制化</label>
-                    <el-date-picker v-model="aaa.value" type="daterange" placeholder="选择日期范围" size="small"
-                                    :picker-options="aaa.pickerOptions" value-format="yyyy-MM-dd"></el-date-picker>
-                </el-col>
-            </template>
-        </search>
-        <!--<toolbar v-bind="toolbar" :tabulationKeys="tabulation.keys" :searchData="search.data"></toolbar>-->
+        <!--<search v-bind="search" @startSearch="startSearch" @resetSearch="resetSearch">-->
+            <!--<template slot="aaa">-->
+                <!--<el-col :sm="24" :md="16" :lg="12">-->
+                    <!--<label>定制化</label>-->
+                    <!--<el-date-picker v-model="aaa.value" type="daterange" placeholder="选择日期范围" size="small"-->
+                                    <!--:picker-options="aaa.pickerOptions" value-format="yyyy-MM-dd"></el-date-picker>-->
+                <!--</el-col>-->
+            <!--</template>-->
+        <!--</search>-->
+        <toolbar v-bind="toolbar"></toolbar>
         <tabulation v-bind="tabulation" @selection="selectionChange" @sort="setSort" :setSelectable="setSelectable">
             <template slot="pic2" slot-scope="scope">
                 <img width="100%" :src="scope.row.pic2">
@@ -19,7 +19,9 @@
     </div>
 </template>
 <script>
+    import Toolbar from "src/components/table/Toolbar";
     export default {
+        components: {Toolbar},
         data() {
             return {
                 aaa: {
@@ -71,53 +73,50 @@
                 toolbar: {
                     id: 'demoTable',
                     handle: [
-                        {mode: 'button', label: '添加', icon: 'fa-plus', callback: this.batch1, access: 'allAdd'},
-                        {mode: 'button', label: '批量操作', callback: this.batch2},
-                        {
-                            mode: 'dropdown', label: '批量下载', callback: this.batchDownload,
-                            options: [{label: '全部下载', value: 'all'}, {label: '仅下载选中', value: 'selected'}]
-                        }
-                    ]
-                },
-                search: {
-                    data: [{
-                        type: 'compound', key: 'compound', label: '复合型搜索', toggle: true, options: [
-                            {value: 'name', label: '姓名'},
-                            {value: 'no', label: '贷款号贷款号贷款号贷款号贷款号'}]
-                    }, {
-                        type: 'cascade', key: 'jilian1,jilian2', label: '级联搜索', toggle: true, options: [{
-                            value: 'ziyuan', label: '资源', children: [
-                                {value: 'axure', label: 'Axure ComponentsComponents'},
-                                {value: 'sketch', label: 'Sketch Templates'},
-                                {value: 'jiaohu', label: '组件交互文档'}]
+                        {mode: 'button', label: '添加', icon: 'fa-plus', callback: this.batch1}
+                    ],
+                    search: {
+                        data: [{
+                            type: 'compound', key: 'compound', label: '复合型搜索', toggle: true, options: [
+                                {value: 'name', label: '姓名'},
+                                {value: 'no', label: '贷款号贷款号贷款号贷款号贷款号'}]
+                        }, {
+                            type: 'cascade', key: 'jilian1,jilian2', label: '级联搜索', toggle: true, options: [{
+                                value: 'ziyuan', label: '资源', children: [
+                                    {value: 'axure', label: 'Axure ComponentsComponents'},
+                                    {value: 'sketch', label: 'Sketch Templates'},
+                                    {value: 'jiaohu', label: '组件交互文档'}]
+                            }]
+                        }, {
+                            type: 'select', key: 'bank', label: '银行', options: [
+                                {value: true, label: "其他银行"},
+                                {value: '上海银行'}
+                            ]
+                        }, {
+                            type: 'input', key: 'username', label: '姓名'
+                        }, {
+                            type: 'multipleInput', key: 'multipleInput', label: '批量输入'
+                        }, {
+                            type: 'multipleSelect', key: 'multipleSelect', label: '批量选择', options: [
+                                {value: 'true', label: "aaa"},
+                                {value: '1', label: "bbb"},
+                                {value: '2', label: "ccc"},
+                                {value: 'ddd'}
+                            ]
+                        }, {
+                            type: 'custom', slotName: 'dataRange'
+                        }, {
+                            type: 'date', key: 'date', label: '日期型', toggle: true
+                        }, {
+                            type: 'dateRange', key: 'startDate,endDate', range: 30, label: '日期范围', toggle: true
+                        }, {
+                            type: 'dateTimeRange', key: 'startTime,endTime', range: 10, label: '日期时间范围', toggle: true
+                        }, {
+                            type: 'custom', slotName: 'aaa'
                         }]
-                    }, {
-                        type: 'select', key: 'bank', label: '银行', options: [
-                            {value: true, label: "其他银行"},
-                            {value: '上海银行'}
-                        ]
-                    }, {
-                        type: 'input', key: 'username', label: '姓名'
-                    }, {
-                        type: 'multipleInput', key: 'multipleInput', label: '批量输入'
-                    }, {
-                        type: 'multipleSelect', key: 'multipleSelect', label: '批量选择', options: [
-                            {value: 'true', label: "aaa"},
-                            {value: '1', label: "bbb"},
-                            {value: '2', label: "ccc"},
-                            {value: 'ddd'}
-                        ]
-                    }, {
-                        type: 'custom', slotName: 'dataRange'
-                    }, {
-                        type: 'date', key: 'date', label: '日期型', toggle: true
-                    }, {
-                        type: 'dateRange', key: 'startDate,endDate', range: 30, label: '日期范围', toggle: true
-                    }, {
-                        type: 'dateTimeRange', key: 'startTime,endTime', range: 10, label: '日期时间范围', toggle: true
-                    }, {
-                        type: 'custom', slotName: 'aaa'
-                    }]
+                    },
+                    upload: {},
+                    download: {}
                 },
                 pagination: {
                     total: 3,
@@ -280,3 +279,8 @@
         }
     }
 </script>
+<style>
+    .page {
+        padding: 20px
+    }
+</style>

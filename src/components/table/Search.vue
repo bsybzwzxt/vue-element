@@ -182,6 +182,31 @@
             // <div slot="search"></div> 自定义搜索内容
         },
         created() {
+            // 读取缓存
+            this.model = this.$state.table.data.searchModel;
+            this.searchData = this.data.map(item => {
+                switch (item.type) {
+                    case 'multipleInput':
+                        if (!this.model[item.key]) {
+                            this.$set(this.model, item.key, []);
+                            item.options = [];
+                        } else {
+                            this.multipleInputChange(item);
+                        }
+                        break;
+                    case 'multipleSelect':
+                        if (!this.model[item.key]) {
+                            this.$set(this.model, item.key, []);
+                        }
+                        break;
+                    case 'cascade':
+                        if (!this.model[item.key]) {
+                            this.$set(this.model, item.key, []);
+                        }
+                        break;
+                }
+                return item;
+            });
             if (this.id) {
                 // 加载搜索
                 let searchKey = JSON.parse(localStorage.getItem(this.id + 'Search'));
@@ -193,23 +218,6 @@
                     }
                 }
             }
-        },
-        mounted() {
-            this.searchData = this.data.map(item => {
-                switch (item.type) {
-                    case 'multipleInput':
-                        this.$set(this.model, item.key, []);
-                        item.options = [];
-                        break;
-                    case 'multipleSelect':
-                        this.$set(this.model, item.key, []);
-                        break;
-                    case 'cascade':
-                        this.$set(this.model, item.key, []);
-                        break;
-                }
-                return item;
-            });
         },
         methods: {
             startSearch() {
@@ -279,6 +287,7 @@
                             break;
                     }
                 }
+                this.$store.commit('table/setTableSearchData', data);
                 this.$emit('startSearch', data);
             },
             resetSearch() {
@@ -301,13 +310,15 @@
                     }
                     return item;
                 });
+                this.$store.commit('table/setTableSearchModel', {});
+                this.$store.commit('table/setTableSearchData', {});
                 this.$emit('resetSearch');
             },
             dateRangeFocus(range) {
                 this.ensureRange = range;
             },
             disabledDate(time) {
-                return this.ensureDate ? time.getTime() > this.ensureDate.getTime() + 86400000 * this.ensureRange : false
+                return this.ensureDate ? time.getTime() > this.ensureDate.getTime() + 86400000 * this.ensureRange : false;
             },
             onPick(date) {
                 this.ensureDate = date.maxDate ? '' : date.minDate;
@@ -332,6 +343,9 @@
                     }
                 }
                 localStorage.setItem(this.id + 'Search', JSON.stringify(searchKey));
+                this.$nextTick(() => {
+                    this.$emit('setSearch', searchKey);
+                });
             }
         }
     }

@@ -20,9 +20,4 @@ const components = [
     Pagination
 ];
 
-exports.install = Vue => {
-    // 加载全局组件
-    components.map(component => {
-        Vue.component(component.name, component);
-    });
-};
+export default components;

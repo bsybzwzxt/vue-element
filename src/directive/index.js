@@ -9,15 +9,10 @@ import tracking from './tracking';
 // el弹窗移动
 import elDialogMove from './elDialogMove';
 // 全局自定义指令列表
-const directiveList = [
+const directives = [
     validate,
     tracking,
     elDialogMove
 ];
 
-exports.install = Vue => {
-    // 加载全局自定义指令
-    directiveList.map(directive => {
-        Vue.use(directive);
-    });
-};
+export default directives;

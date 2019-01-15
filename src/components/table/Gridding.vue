@@ -16,7 +16,7 @@
                             <i v-if="i.icon" class="fa fa-lg" :class="i.icon"></i>{{i.label}}
                         </span>
                         </div>
-                        <div v-if="batch" class="gridding-check">
+                        <div v-if="batch" class="gridding-check" :class="item.griddingSelected ? 'active' : ''">
                             <i :class="item.griddingSelected ? 'fa-check-square' : 'fa-square-o'" class="fa fa-lg"></i>
                         </div>
                     </div>
@@ -175,8 +175,8 @@
         position: relative;
         width: 100%;
         height: 238px;
-        border: 1px solid #ffffff;
-        background: url("/src/images/opacity.png");
+        border: 1px solid #D9D9D9;
+        background: url("../../images/opacity.png");
         box-sizing: content-box;
         display: flex;
         justify-content: center;
@@ -185,6 +185,11 @@
 
     .gridding-layout .gridding-image:hover {
         border-color: #3366FF;
+    }
+
+    .gridding-layout .gridding-image .gridding-check.active,
+    .gridding-layout .gridding-image:hover .gridding-check {
+        display: block;
     }
 
     .gridding-image img {
@@ -197,6 +202,7 @@
         position: absolute;
         top: 8px;
         left: 8px;
+        display: none;
     }
 
     .gridding-check-all .fa-check-square,

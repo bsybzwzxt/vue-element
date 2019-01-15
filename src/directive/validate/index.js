@@ -103,6 +103,11 @@ const inspect = (value, rule) => {
                 return false;
             }
             break;
+        case 'hiddenSpot':
+            if (/\./.test(value)) {
+                return false;
+            }
+            break;
         case 'number':
             if (!/^[0-9]*$/.test(value)) {
                 return false;

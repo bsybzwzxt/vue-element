@@ -10,6 +10,7 @@ import MainLayout from './main/Layout'
 const route = {
     Login: resolve => require.ensure([], () => resolve(require('src/vue/Login')), 'vue/Login'),
     Error: resolve => require.ensure([], () => resolve(require('src/vue/Error')), 'vue/Error'),
+    Index: resolve => require.ensure([], () => resolve(require('src/vue/Index')), 'vue/Index'),
     DemoTable: resolve => require.ensure([], () => resolve(require('src/vue/demo/Table')), 'vue/demo/Table'),
     // 权限控制
     AccessAccessTable: resolve => require.ensure([], () => resolve(require('src/vue/access/AccessTable')), 'vue/access/AccessTable'),
@@ -23,6 +24,8 @@ const router = new Router({
         path: '/main',
         component: MainLayout,
         children: [{
+            path: 'index', component: route.Index
+        }, {
             path: 'demo/table', component: route.DemoTable
         }, {
             // 权限控制
@@ -33,11 +36,11 @@ const router = new Router({
             path: 'access/user/table', component: route.AccessUserTable
         }]
     }, {
-        path: '/login', component: route.Login
+        path: '/login', component: route.Login, meta: {hasToken: false}
     }, {
-        path: '/', component: route.Login
+        path: '/', component: route.Login, meta: {hasToken: false}
     }, {
-        path: '*', component: route.Error
+        path: '*', component: route.Error, meta: {hasToken: false}
     }]
 });
 
@@ -45,6 +48,19 @@ const router = new Router({
 let accessPage = ['/main/access/user/table', '/main/access/access/table', '/main/access/role/table'];
 
 router.beforeEach((to, from, next) => {
+    // 验证用户
+    if (localStorage.getItem('token') === null && to.meta.hasToken === undefined) {
+        next({path: '/login'});
+        return;
+    }
+
+    // table缓存
+    if (from.path === '/' || (to.meta.cacheName !== undefined && to.meta.cacheName === from.meta.cacheName)) {
+        store.commit('table/setTableLoad', to.meta.cacheStep);
+    } else {
+        store.commit('table/resetTableLoad');
+    }
+
     // 监听权限
     store.state.user.access = new Proxy(store.state.user.access, {
         set: function (target, key, value) {

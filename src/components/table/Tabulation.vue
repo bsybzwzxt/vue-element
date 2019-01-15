@@ -32,8 +32,7 @@
                                 <el-dropdown-item v-for="option in (typeof item.options === 'string' ? scope.row[item.options] : item.options)"
                                                   v-if="!option.display || scope.row[option.display]"
                                                   :disabled="(option.disabled && scope.row[option.disabled])"
-                                                  :key="option.value" divided :command="option.value">
-                                    {{option.label}}
+                                                  :key="option.value" divided :command="option.value">{{option.label}}
                                 </el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -151,7 +150,7 @@
                         this.$nextTick(() => {
                             for (let item of value) {
                                 if (item.isSelected) {
-                                    this.$refs[this.id].toggleRowSelection(item)
+                                    this.$refs[this.id].toggleRowSelection(item);
                                 }
                             }
                         });

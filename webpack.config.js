@@ -193,6 +193,6 @@ module.exports = WebpackMerge(options.config, {
                 // 删除html中的空白符
                 collapseWhitespace: true
             }
-        }),
+        })
     ]
 });

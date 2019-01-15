@@ -24,33 +24,28 @@
             </div>
             <div class="toolbar-expand">
                 <label v-if="upload && (!upload.access || $state.user.access[upload.access])"
-                       :class="{'is-active': isActive('upload'),'is-collapse': isCollapse('upload')}"
-                       @click="collapseChange('upload')">
+                       :class="{'is-active': isActive('upload'),'is-collapse': isCollapse('upload')}" @click="collapseChange('upload')">
                     <i class="fa fa-upload"></i>导入
                 </label>
                 <label v-if="download && (!download.access || $state.user.access[download.access])"
-                       :class="{'is-active': isActive('download'),'is-collapse': isCollapse('download')}"
-                       @click="collapseChange('download')">
+                       :class="{'is-active': isActive('download'),'is-collapse': isCollapse('download')}" @click="collapseChange('download')">
                     <i class="fa fa-download"></i>导出
                 </label>
                 <label v-if="search && (!search.access || $state.user.access[search.access])"
-                       :class="{'is-active': isActive('search'),'is-collapse': isCollapse('search')}"
-                       @click="collapseChange('search')">
+                       :class="{'is-active': isActive('search'),'is-collapse': isCollapse('search')}" @click="collapseChange('search')">
                     <i class="fa fa-search"></i>搜索栏
                 </label>
             </div>
         </div>
         <div class="toolbar-collapse" ref="collapse">
-            <div v-show="collapseType === 'upload'">
-                <!--<slot name="upload"></slot>-->
+            <div v-if="collapseType === 'upload'">
+                <slot name="upload"></slot>
             </div>
-            <div v-show="collapseType === 'download'">
-                <!--<slot name="download"></slot>-->
+            <div v-if="collapseType === 'download'">
+                <slot name="download"></slot>
             </div>
-            <template v-if="search">
-                <search v-show="collapseType === 'search'" v-bind="search" @startSearch="startSearch"
-                        @resetSearch="resetSearch"></search>
-            </template>
+            <search v-if="collapseType === 'search'" v-bind="search" @startSearch="startSearch" @resetSearch="resetSearch"
+                    @setSearch="resizeHeight"></search>
         </div>
     </div>
 </template>
@@ -59,22 +54,8 @@
         name: 'Toolbar',
         data() {
             return {
-                collapseState: false,
-                collapseType: '',
-                transformState: false,
-                searchHeight: 0
-            }
-        },
-        computed: {
-            isActive() {
-                return (type) => {
-                    return this.collapseType === type;
-                }
-            },
-            isCollapse() {
-                return (type) => {
-                    return this.collapseType === type && !this.collapseState;
-                }
+                collapseState: true,
+                collapseType: ''
             }
         },
         props: {
@@ -110,70 +91,59 @@
                 type: Object
             }
         },
+        computed: {
+            isActive() {
+                return (type) => {
+                    return this.collapseType === type;
+                }
+            },
+            isCollapse() {
+                return (type) => {
+                    return this.collapseType === type && this.collapseState && !this[type].callback;
+                }
+            }
+        },
         created() {
             this.collapseType = (this.search && (!this.search.access || this.$state.user.access[this.search.access])) ? 'search' : ((this.download && (!this.download.access || this.$state.user.access[this.download.access])) ? 'download' : ((this.upload && (!this.upload.access || this.$state.user.access[this.upload.access])) ? 'upload' : ''));
-            console.log(this.collapseType);
         },
         mounted() {
-            this.searchHeight = this.$refs.collapse.offsetHeight;
+            if (this.$refs.collapse && this.$refs.collapse.children[0]) {
+                this.resizeHeight();
+                window.addEventListener('resize', this.resizeHeight);
+            }
+        },
+        destroyed() {
+            window.removeEventListener('resize', this.resizeHeight);
         },
         methods: {
             collapseChange(type) {
-                // 执行回调
-                this[type].callback && this[type].callback();
-                if (this.collapseType !== type) {
-                    this.collapseType = type;
+                if (this[type].callback) {
+                    this[type].callback();
                     return;
                 }
-                let el = this.$refs.collapse;
-                if (this.collapseState) {
-                    this.collapseState = false;
-                    el.style.display = '';
-                    if(!el.offsetHeight){
-                        return false
-                    }
-                    if (!this.transformState) {
-                        this.searchHeight = el.offsetHeight;
-                    }
-                    // if (!el.style.height) {
-                    //     this.searchHeight = el.offsetHeight;
-                    // }
-                    el.style.height = '0';
-                    setTimeout(() => {
-                        el.style.height = this.searchHeight + 'px';
-                    });
-                } else {
-                    this.collapseState = true;
-                    if(!el.offsetHeight){
-                        return false
-                    }
-                    // if (!el.style.height) {
-                    //     this.searchHeight = el.offsetHeight;
-                    // }
-                    if (!this.transformState) {
-                        this.searchHeight = el.offsetHeight;
-                    }
-                    el.style.height = this.searchHeight + 'px';
-                    setTimeout(() => {
-                        el.style.height = '0';
-                    });
+                this.collapseState = true;
+                if (this.collapseType !== type) {
+                    this.collapseType = type;
+                    this.resizeHeight();
+                    return;
                 }
-                let transitionEnd = () => {
-                    el.style.height = '';
-                    if (this.collapseState) {
-                        el.style.display = 'none';
-                    }
-                    this.transformState = false;
-                    el.removeEventListener('transitionend', transitionEnd, false);
-                };
-                this.transformState = true;
-                el.addEventListener('transitionend', transitionEnd, false);
+                if (!!this.$refs.collapse.offsetHeight) {
+                    this.collapseState = false;
+                    this.$refs.collapse.style.height = 0;
+                } else {
+                    this.resizeHeight();
+                }
             },
             startSearch(data) {
                 this.$emit('startSearch', data);
             },
             resetSearch() {
                 this.$emit('resetSearch');
+            },
+            resizeHeight() {
+                this.$nextTick(() => {
+                    this.$refs.collapse.style.height = this.$refs.collapse.children[0].offsetHeight + 'px';
+                });
             }
         }
     }

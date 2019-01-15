@@ -5,7 +5,7 @@
         <section class="main-section">
             <tab-list :routeList="routeList"></tab-list>
             <transition name="fade" mode="out-in">
-                <router-view></router-view>
+                <router-view v-if="reloadActive"></router-view>
             </transition>
         </section>
     </div>
@@ -21,6 +21,12 @@
             TopBar: TopBar,
             SideBar: SideBar,
             TabList: TabList
+        },
+        inject: ['reload'],
+        computed: {
+            reloadActive() {
+                return this.reload.active;
+            }
         },
         data() {
             return {

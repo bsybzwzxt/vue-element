@@ -108,23 +108,27 @@
                     return;
                 }
                 this.loginParams.isLogin = true;
-                this.$axios({
-                    method: "post",
-                    url: this.$api.system.login,
-                    data: this.loginForm
-                }).then(response => {
-                    this.loginParams.isLogin = false;
-                    if (response.data.code === 0) {
-                        localStorage.setItem('token', response.data.data.token);
-                        this.$store.commit('user/setUserInfo', response.data.data);
-                        this.$router.push({path: '/main/index'});
-                    } else {
-                        this.loginParams.errorMsg = response.data.msg || '登录失败，请稍后重试';
-                        this.loginParams.error = true;
-                    }
-                }).catch(error => {
-                    this.$message({message: '登录失败,请稍后重试', type: 'error'});
-                });
+                // this.$axios({
+                //     method: "post",
+                //     url: this.$api.system.login,
+                //     data: this.loginForm
+                // }).then(response => {
+                //     this.loginParams.isLogin = false;
+                //     if (response.data.code === 0) {
+                //         localStorage.setItem('token', response.data.data.token);
+                //         this.$store.commit('user/setUserInfo', response.data.data);
+                //         this.$router.push({path: '/main/index'});
+                //     } else {
+                //         this.loginParams.errorMsg = response.data.msg || '登录失败，请稍后重试';
+                //         this.loginParams.error = true;
+                //     }
+                // }).catch(error => {
+                //     this.$message({message: '登录失败,请稍后重试', type: 'error'});
+                // });
+
+                localStorage.setItem('token', '123');
+                // this.$store.commit('user/setUserInfo', response.data.data);
+                this.$router.push({path: '/main/demo/table'});
             }
         }
     }
