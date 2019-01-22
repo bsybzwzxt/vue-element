@@ -4,28 +4,34 @@
             <template v-if="batch">
                 <label>批量操作：</label>
                 <template v-for="item in batch" v-if="!item.access || $state.user.access[item.access]">
-                    <el-button v-if="item.mode === 'button'" size="mini" :type="item.type" :disabled="item.disabled" @click="item.callback">
-                        <i v-if="item.icon" class="fa" :class="item.icon"></i>{{item.label}}
+                    <el-button v-if="item.mode === 'button'" :key="item.label" size="mini" :type="item.type" :disabled="item.disabled"
+                               @click="item.callback">
+                        <i v-if="item.icon" class="fa" :class="item.icon"></i>{{ item.label }}
                     </el-button>
-                    <el-dropdown v-if="item.mode === 'dropdown'" @command="item.callback" size="small" placement="bottom">
+                    <el-dropdown v-if="item.mode === 'dropdown'" :key="item.label" size="small" placement="bottom" @command="item.callback">
                         <el-button :type="item.type" size="mini">
-                            {{item.label}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            {{ item.label }}<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-for="option in item.options" :key="option.value" divided :command="option.value">{{option.label}}
+                            <el-dropdown-item v-for="option in item.options" :key="option.value" divided :command="option.value">
+                                {{ option.label }}
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <slot v-if="item.mode === 'custom' && (!item.access || $state.user.access[item.access])" :name="item.slotName"></slot>
                 </template>
-                <label class="batch-selection">已选择：<span>{{selection.length}}</span> 项</label>
+                <label class="batch-selection">
+                    已选择：<span>{{ selection.length }}</span> 项
+                </label>
             </template>
         </div>
         <div>
             <el-popover v-if="id" placement="bottom-end" trigger="click" popper-class="tabulation-filter">
                 <template v-for="item in keys" v-if="item.toggle !== undefined">
-                    <div class="toolbar-checkbox">
-                        <el-checkbox v-model="item.toggle" @change="setKey">{{item.label}}</el-checkbox>
+                    <div :key="item.label" class="toolbar-checkbox">
+                        <el-checkbox v-model="item.toggle" @change="setKey">
+                            {{ item.label }}
+                        </el-checkbox>
                     </div>
                 </template>
                 <label slot="reference" class="tabulation-config">
@@ -38,14 +44,12 @@
 <script>
     export default {
         name: 'BatchToolbar',
-        data() {
-            return {}
-        },
         props: {
             // 表数据
             // 用户筛选行为保存id
             id: {
-                type: String
+                type: String,
+                default: ''
             },
             // batch: Array 工具条按钮组
             // |--mode: String 必填,选择模式,有button,dropdown和custom
@@ -57,7 +61,10 @@
             // |--options: mode为dropdown时的下拉选项,label和value(select类似)
             // |--slotName: mode为slot时的slotName
             batch: {
-                type: Array
+                type: Array,
+                default: () => {
+                    return []
+                }
             },
             // keys: Array 显示表字段
             // |--type: String 模式,不填为正常值,有picture和custom选项
@@ -73,12 +80,21 @@
             // |--toggle: Boolean 字段可以被设置,需设置key和label
             // |--slotName: String type为custom时,关联的name
             keys: {
-                type: Array
+                type: Array,
+                default: () => {
+                    return []
+                }
             },
             // selection: Array 选择项
             selection: {
-                type: Array
+                type: Array,
+                default: () => {
+                    return []
+                }
             }
+        },
+        data() {
+            return {}
         },
         created() {
             // 加载字段

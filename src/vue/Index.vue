@@ -12,7 +12,7 @@
                 <div class="pull-left shop-avatar">
                 </div>
                 <div>
-                    <a @click="">同步店铺信息</a>
+                    <!--<a @click="">同步店铺信息</a>-->
                 </div>
             </div>
             <div class="shop-right">
@@ -21,7 +21,7 @@
                 </div>
                 <div class="line"></div>
                 <div class="pull-left">
-                    <p>商品数量</p>
+                    <p>表格数量</p>
                 </div>
                 <div class="line"></div>
                 <div class="pull-left">
@@ -58,13 +58,13 @@
     </div>
 </template>
 <script>
-    // import headDefault from 'src/images/head_default.png'
+    // import avatar from 'src/images/avatar.png'
     // import {getInfoList, getStatistic, syncShopInfo, getDashboardLog} from 'src/api/index'
 
     export default {
         data() {
             return {
-                // headDefault: headDefault,
+                // avatar: headDefault,
                 personalInfo: {},
                 shops: [],
                 brands: [],
@@ -93,8 +93,6 @@
                     shopInfo: {}
                 },
                 logResult: [],
-                marqueeList: ['<span style="color: #3366ff; font-weight: bold;">【喜大普奔】</span>1月10日PIM-Speedraw v1.5正式上线啦，首页工作台全新展示，快瞅瞅！',
-                    '<span style="color: #3366ff; font-weight: bold;">注意！</span>天猫后台无线端详情页新工具【旺铺编辑】，会使PDP上传出错，请暂时不要切换。'],
                 animate: false
             }
         },
@@ -111,7 +109,7 @@
             //     this.logResult = result2.docs;
             //     this.infoList = result3;
             // });
-            setInterval(this.showMarquee, 5000);
+            // setInterval(this.showMarquee, 5000);
         },
         computed: {
             //三位一逗

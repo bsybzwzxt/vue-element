@@ -6,9 +6,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 let options = require(path.join(__dirname, 'webpack.options.js'));
+let config = {};
 
 if (process.env.NODE_ENV === 'development') {
-    options.config = {
+    config = {
         devServer: {
             hot: true,
             port: options.port,
@@ -18,39 +19,134 @@ if (process.env.NODE_ENV === 'development') {
             disableHostCheck: true,
             proxy: options.proxy
         },
+        module: {
+            rules: [{
+                // eslint
+                test: /\.(js|vue)$/,
+                include: [
+                    path.join(__dirname, 'src')
+                ],
+                enforce: "pre",
+                loader: 'eslint-loader'
+            }, {
+                // 开发环境启用热加载,不能抽离css
+                test: /\.css$/,
+                use: ['style-loader', {
+                    loader: 'css-loader', options: {importLoaders: 1}
+                }, {
+                    loader: 'postcss-loader', options: {
+                        plugins: [
+                            // require('postcss-px2rem')({remUnit: 16}),
+                            require('autoprefixer')()
+                        ]
+                    }
+                }]
+            }, {
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', {
+                    loader: 'postcss-loader', options: {
+                        sourceMap: true,
+                        plugins: [
+                            // require('postcss-px2rem')({remUnit: 16}),
+                            require('autoprefixer')()
+                        ]
+                    }
+                }, 'sass-loader']
+            }, {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', {
+                    loader: 'postcss-loader', options: {
+                        sourceMap: true,
+                        plugins: [
+                            // require('postcss-px2rem')({remUnit: 16}),
+                            require('autoprefixer')()
+                        ]
+                    }
+                }, 'less-loader']
+            }]
+        },
         devtool: '#cheap-module-eval-source-map',
         plugins: [
             new Webpack.HotModuleReplacementPlugin()
         ]
     };
     // 开发环境启用热加载,不能抽离css
-    options.cssUse = ['style-loader', {
-        loader: 'css-loader', options: {importLoaders: 1}
-    }, {
-        loader: 'postcss-loader', options: {
-            plugins: [
-                // require('postcss-px2rem')({remUnit: 16}),
-                require('autoprefixer')()
-            ]
-        }
-    }];
-    options.scssUse = ['style-loader', 'css-loader', {
-        loader: 'postcss-loader', options: {
-            sourceMap: true,
-            plugins: [
-                // require('postcss-px2rem')({remUnit: 16}),
-                require('autoprefixer')()
-            ]
-        }
-    }, 'sass-loader'];
+    // options.cssUse = ['style-loader', {
+    //     loader: 'css-loader', options: {importLoaders: 1}
+    // }, {
+    //     loader: 'postcss-loader', options: {
+    //         plugins: [
+    //             // require('postcss-px2rem')({remUnit: 16}),
+    //             require('autoprefixer')()
+    //         ]
+    //     }
+    // }];
+    // options.scssUse = ['style-loader', 'css-loader', {
+    //     loader: 'postcss-loader', options: {
+    //         sourceMap: true,
+    //         plugins: [
+    //             // require('postcss-px2rem')({remUnit: 16}),
+    //             require('autoprefixer')()
+    //         ]
+    //     }
+    // }, 'sass-loader'];
+    // options.lessUse = ['style-loader', 'css-loader', {
+    //     loader: 'postcss-loader', options: {
+    //         sourceMap: true,
+    //         plugins: [
+    //             // require('postcss-px2rem')({remUnit: 16}),
+    //             require('autoprefixer')()
+    //         ]
+    //     }
+    // }, 'less-loader'];
 }
 
 if (process.env.NODE_ENV === 'production') {
-    options.config = {
+    config = {
         output: {
             filename: 'javascript/[name].[hash].js',
             path: path.join(__dirname, 'dist'),
             chunkFilename: 'javascript/chunk/[name].[chunkHash].js'
+        },
+        module: {
+            rules: [{
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, {
+                    loader: 'css-loader', options: {importLoaders: 1}
+                }, {
+                    loader: 'postcss-loader', options: {
+                        plugins: [
+                            require('autoprefixer')(),
+                            // require('postcss-px2rem')({remUnit: 16}),
+                            require('cssnano')()
+                        ]
+                    }
+                }]
+            }, {
+                test: /\.scss$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', {
+                    loader: 'postcss-loader', options: {
+                        sourceMap: true,
+                        plugins: [
+                            require('autoprefixer')(),
+                            // require('postcss-px2rem')({remUnit: 16}),
+                            require('cssnano')()
+                        ]
+                    }
+                }, 'sass-loader']
+            }, {
+                test: /\.less$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', {
+                    loader: 'postcss-loader', options: {
+                        sourceMap: true,
+                        plugins: [
+                            require('autoprefixer')(),
+                            // require('postcss-px2rem')({remUnit: 16}),
+                            require('cssnano')()
+                        ]
+                    }
+                }, 'less-loader']
+            }]
         },
         devtool: '#source-map',
         plugins: [
@@ -81,31 +177,40 @@ if (process.env.NODE_ENV === 'production') {
             // new ExtractTextPlugin({filename: 'css/[name].[hash].css', allChunks: true})
         ]
     };
-    options.cssUse = [MiniCssExtractPlugin.loader, {
-        loader: 'css-loader', options: {importLoaders: 1}
-    }, {
-        loader: 'postcss-loader', options: {
-            plugins: [
-                require('autoprefixer')(),
-                // require('postcss-px2rem')({remUnit: 16}),
-                require('cssnano')()
-            ]
-        }
-    }];
-
-    options.scssUse = [MiniCssExtractPlugin.loader, 'css-loader', {
-        loader: 'postcss-loader', options: {
-            sourceMap: true,
-            plugins: [
-                require('autoprefixer')(),
-                // require('postcss-px2rem')({remUnit: 16}),
-                require('cssnano')()
-            ]
-        }
-    }, 'sass-loader'];
+    // options.cssUse = [MiniCssExtractPlugin.loader, {
+    //     loader: 'css-loader', options: {importLoaders: 1}
+    // }, {
+    //     loader: 'postcss-loader', options: {
+    //         plugins: [
+    //             require('autoprefixer')(),
+    //             // require('postcss-px2rem')({remUnit: 16}),
+    //             require('cssnano')()
+    //         ]
+    //     }
+    // }];
+    // options.scssUse = [MiniCssExtractPlugin.loader, 'css-loader', {
+    //     loader: 'postcss-loader', options: {
+    //         sourceMap: true,
+    //         plugins: [
+    //             require('autoprefixer')(),
+    //             // require('postcss-px2rem')({remUnit: 16}),
+    //             require('cssnano')()
+    //         ]
+    //     }
+    // }, 'sass-loader'];
+    // options.lessUse = [MiniCssExtractPlugin.loader, 'css-loader', {
+    //     loader: 'postcss-loader', options: {
+    //         sourceMap: true,
+    //         plugins: [
+    //             require('autoprefixer')(),
+    //             // require('postcss-px2rem')({remUnit: 16}),
+    //             require('cssnano')()
+    //         ]
+    //     }
+    // }, 'less-loader'];
 }
 
-module.exports = WebpackMerge(options.config, {
+module.exports = WebpackMerge(config, {
     mode: process.env.NODE_ENV,
     entry: {
         app: ["babel-polyfill", path.join(__dirname, 'src/main.js')]
@@ -143,12 +248,15 @@ module.exports = WebpackMerge(options.config, {
                     plugins: ['transform-runtime', 'transform-object-rest-spread']
                 }
             }]
-        }, {
-            test: /\.css$/,
-            use: options.cssUse
-        }, {
-            test: /\.scss$/,
-            use: options.scssUse
+            // }, {
+            //     test: /\.css$/,
+            //     use: options.cssUse
+            // }, {
+            //     test: /\.scss$/,
+            //     use: options.scssUse
+            // }, {
+            //     test: /\.less$/,
+            //     use: options.lessUse
         }, {
             test: /\.json$/, loader: 'json-loader'
         }, {
@@ -160,7 +268,7 @@ module.exports = WebpackMerge(options.config, {
                     name: 'images/[name].[hash].[ext]',
                     // publicPath: '..'
                 }
-            }],
+            }]
         }, {
             test: /\.(woff(2)?|eot|ttf|otf|svg)(\?.*)?$/,
             use: [{
@@ -193,6 +301,6 @@ module.exports = WebpackMerge(options.config, {
                 // 删除html中的空白符
                 collapseWhitespace: true
             }
-        })
+        }),
     ]
 });

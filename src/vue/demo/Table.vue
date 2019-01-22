@@ -19,9 +19,7 @@
     </div>
 </template>
 <script>
-    import Toolbar from "src/components/table/Toolbar";
     export default {
-        components: {Toolbar},
         data() {
             return {
                 aaa: {
@@ -71,11 +69,11 @@
                     ]
                 },
                 toolbar: {
-                    id: 'demoTable',
                     handle: [
                         {mode: 'button', label: '添加', icon: 'fa-plus', callback: this.batch1}
                     ],
                     search: {
+                        id: 'demoSearch',
                         data: [{
                             type: 'compound', key: 'compound', label: '复合型搜索', toggle: true, options: [
                                 {value: 'name', label: '姓名'},

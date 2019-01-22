@@ -1,18 +1,12 @@
 <template>
     <div class="pagination">
-        <el-pagination @size-change="sizeChange" @current-change="currentChange" :current-page='model[pageKey]'
-                       :page-sizes='sizes' :page-size='model[sizeKey]' :layout='layout' :total='total'>
-        </el-pagination>
+        <el-pagination :current-page="model[pageKey]" :page-sizes="sizes" :page-size="model[sizeKey]" :layout="layout"
+                       :total="total" @size-change="sizeChange" @current-change="currentChange"></el-pagination>
     </div>
 </template>
 <script>
     export default {
         name: 'Pagination',
-        data() {
-            return {
-                model: {}
-            }
-        },
         props: {
             // 数据总数
             total: {
@@ -26,7 +20,8 @@
             },
             // 当前分页规格
             size: {
-                type: Number
+                type: Number,
+                default: 10
             },
             // 分页规格选择
             sizes: {
@@ -50,8 +45,13 @@
             }
             // @change: 分页组件变化时回调,返回分页page,size参数
         },
+        data() {
+            return {
+                model: {}
+            }
+        },
         mounted() {
-            this.model[this.sizeKey] = this.$state.table.data.size || this.size || this.sizes[0];
+            this.model[this.sizeKey] = this.$state.table.data.size || this.size;
             this.model[this.pageKey] = this.$state.table.data.page || this.page;
         },
         methods: {

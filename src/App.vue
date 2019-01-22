@@ -1,5 +1,5 @@
 <template>
-    <div class="loading" v-loading.fullscreen.lock="$state.layout.loading" element-loading-text="Loading">
+    <div v-loading.fullscreen.lock="$state.layout.loading" class="loading" element-loading-text="Loading">
         <transition name="fade" mode="out-in">
             <router-view></router-view>
         </transition>
@@ -43,12 +43,6 @@
                 };
                 getUserInfo().then((result) => {
                     this.$store.commit('user/setUserInfo', {...result});
-                    this.$store.commit('user/setUserShop', {
-                        ...result, ...{
-                            shopIdKey: 'latestLoginShopId',
-                            shopNickKey: 'latestLoginShopNick'
-                        }
-                    });
                 });
 
                 // this.$ajax('get', this.$api.personal.info, {}, null, null, {
@@ -70,15 +64,13 @@
                 //     console.log('error'+error)
                 // });
             }
-
             // 权限系统
-//            this.$ajax(this.$api.accessSystem.getAccess, {system: 'appName'}, (result) => {
-//            });
-
+            // this.$ajax(this.$api.accessSystem.getAccess, {system: 'appName'}, (result) => {
+            // });
             // 登录系统
-//            this.$ajax(this.$api.loginSystem.getUsername, {}, (result) => {
-//                console.log(result);
-//            });
+            // this.$ajax(this.$api.loginSystem.getUsername, {}, (result) => {
+            //     console.log(result);
+            // });
         },
         methods: {
             reloadHandle() {

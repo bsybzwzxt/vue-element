@@ -35,7 +35,7 @@
                 // tabs默认第一页的path必须与side页的path相同
                 routeList: [{
                     index: 'index',
-                    name: '我的工作台',
+                    name: '首页',
                     icon: 'fa-tachometer',
                     path: '/main/index'
                 }, {

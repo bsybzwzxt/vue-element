@@ -3,61 +3,49 @@
         <div class="toolbar">
             <div>
                 <template v-for="item in handle" v-if="!item.access || $state.user.access[item.access]">
-                    <el-button v-if="item.mode === 'button'" size="small" :type="item.type" :disabled="item.disabled"
+                    <el-button v-if="item.mode === 'button'" :key="item.label" size="small" :type="item.type" :disabled="item.disabled"
                                @click="item.callback">
-                        <i v-if="item.icon" class="fa" :class="item.icon"></i>{{item.label}}
+                        <i v-if="item.icon" class="fa" :class="item.icon"></i>{{ item.label }}
                     </el-button>
-                    <el-dropdown v-if="item.mode === 'dropdown'" @command="item.callback" size="small"
-                                 placement="bottom">
+                    <el-dropdown v-if="item.mode === 'dropdown'" :key="item.label" size="small" placement="bottom" @command="item.callback">
                         <el-button :type="item.type" size="small">
-                            {{item.label}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            {{ item.label }}<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-for="option in item.options" :key="option.value" divided
-                                              :command="option.value">{{option.label}}
+                            <el-dropdown-item v-for="option in item.options" :key="option.value" divided :command="option.value">
+                                {{ option.label }}
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <slot v-if="item.mode === 'custom' && (!item.access || $state.user.access[item.access])"
-                          :name="item.slotName"></slot>
+                    <slot v-if="item.mode === 'custom' && (!item.access || $state.user.access[item.access])" :name="item.slotName"></slot>
                 </template>
             </div>
             <div class="toolbar-expand">
-                <label v-if="upload && (!upload.access || $state.user.access[upload.access])"
-                       :class="{'is-active': isActive('upload'),'is-collapse': isCollapse('upload')}" @click="collapseChange('upload')">
+                <label v-if="upload && (!upload.access || $state.user.access[upload.access])" :class="{'is-active': isActive('upload'),'is-collapse': isCollapse('upload')}" @click="collapseChange('upload')">
                     <i class="fa fa-upload"></i>导入
                 </label>
-                <label v-if="download && (!download.access || $state.user.access[download.access])"
-                       :class="{'is-active': isActive('download'),'is-collapse': isCollapse('download')}" @click="collapseChange('download')">
+                <label v-if="download && (!download.access || $state.user.access[download.access])" :class="{'is-active': isActive('download'),'is-collapse': isCollapse('download')}" @click="collapseChange('download')">
                     <i class="fa fa-download"></i>导出
                 </label>
-                <label v-if="search && (!search.access || $state.user.access[search.access])"
-                       :class="{'is-active': isActive('search'),'is-collapse': isCollapse('search')}" @click="collapseChange('search')">
+                <label v-if="search && (!search.access || $state.user.access[search.access])" :class="{'is-active': isActive('search'),'is-collapse': isCollapse('search')}" @click="collapseChange('search')">
                     <i class="fa fa-search"></i>搜索栏
                 </label>
             </div>
         </div>
-        <div class="toolbar-collapse" ref="collapse">
+        <div ref="collapse" class="toolbar-collapse">
             <div v-if="collapseType === 'upload'">
                 <slot name="upload"></slot>
             </div>
             <div v-if="collapseType === 'download'">
                 <slot name="download"></slot>
             </div>
-            <search v-if="collapseType === 'search'" v-bind="search" @startSearch="startSearch" @resetSearch="resetSearch"
-                    @setSearch="resizeHeight"></search>
+            <search v-if="collapseType === 'search'" v-bind="search" @startSearch="startSearch" @resetSearch="resetSearch" @setSearch="resizeHeight"></search>
         </div>
     </div>
 </template>
 <script>
     export default {
         name: 'Toolbar',
-        data() {
-            return {
-                collapseState: true,
-                collapseType: ''
-            }
-        },
         props: {
             // handle: Array 工具条按钮组
             // |--mode: String 必填,选择模式,有button,dropdown和custom
@@ -78,17 +66,32 @@
             // |--access: String 权限Key
             // |--callback: Function 回调方法
             upload: {
-                type: Object
+                type: Object,
+                default: () => {
+                    return {}
+                }
             },
             // download: Object 导出
             // |--access: String 权限Key
             // |--callback: Function 回调方法
             download: {
-                type: Object
+                type: Object,
+                default: () => {
+                    return {}
+                }
             },
             // search: Object 搜索组件的参数
             search: {
-                type: Object
+                type: Object,
+                default: () => {
+                    return {}
+                }
+            }
+        },
+        data() {
+            return {
+                collapseState: true,
+                collapseType: ''
             }
         },
         computed: {

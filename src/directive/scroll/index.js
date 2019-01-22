@@ -12,7 +12,7 @@ export default {
                 el.style.top = (el.parentNode.offsetHeight - el.offsetHeight > 0 ? 0 : el.parentNode.offsetHeight - el.offsetHeight) + 'px';
             }
         };
-        window.addEventListener("resize", scrollResize, false);
+        window.addEventListener('resize', scrollResize, false);
         // 滚动
         // 滚动距离
         const OFFSET_DISTANCE = 50;
@@ -74,7 +74,7 @@ export default {
         }
     },
     unbind: function (el) {
-        window.removeEventListener("resize", scrollResize, false);
+        window.removeEventListener('resize', scrollResize, false);
         el.removeEventListener('mousewheel', mouseScroll, false);
         el.removeEventListener('DOMMouseScroll', mouseScroll, false);
         el.removeEventListener('mousedown', mouseDown, false);

@@ -15,8 +15,7 @@ export function ajax(method, url, params, success, error, {loading = true, heade
         url: url,
         data: params,
         headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            shopId: store.state.user.shopId || localStorage.getItem('shopId')
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
         }
     };
     if (Object.prototype.toString.call(header) === '[object Object]') {

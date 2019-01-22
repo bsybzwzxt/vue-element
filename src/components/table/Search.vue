@@ -1,75 +1,79 @@
 <template>
-    <div class="search" v-if="!access || $state.user.access[access]">
+    <div v-if="!access || $state.user.access[access]" class="search">
         <el-row :gutter="24">
             <template v-for="item in searchData">
-                <el-col :sm="12" :md="8" :lg="6" v-if="item.toggle !== false && item.type !=='custom'">
+                <el-col v-if="item.toggle !== false && item.type !=='custom'" :key="item.key" :sm="12" :md="8" :lg="6">
                     <template v-if="item.type==='select'">
-                        <label v-if="item.label">{{item.label}}</label>
-                        <el-select v-model="model[item.key]" filterable clearable size="small"
-                                   :placeholder="item.placeholder || '请选择'">
-                            <el-option v-for="option in item.options" :key="option.value"
-                                       :label="option.label || option.value" :value="option.value"></el-option>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
+                        <el-select v-model="model[item.key]" filterable clearable size="small" :placeholder="item.placeholder || '请选择'">
+                            <el-option v-for="option in item.options" :key="option.value" :label="option.label || option.value" :value="option.value"></el-option>
                         </el-select>
                     </template>
                     <template v-else-if="item.type==='input'">
-                        <label v-if="item.label">{{item.label}}</label>
-                        <el-input v-model="model[item.key]" :placeholder="item.placeholder || '请输入'"
-                                  size="small"></el-input>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
+                        <el-input v-model="model[item.key]" :placeholder="item.placeholder || '请输入'" size="small"></el-input>
                     </template>
                     <template v-else-if="item.type==='date'">
-                        <label v-if="item.label">{{item.label}}</label>
-                        <el-date-picker v-model="model[item.key]" type="date" :editable=false
-                                        :placeholder="item.placeholder || '请选择'"
-                                        value-format="yyyy-MM-dd" size="small"></el-date-picker>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
+                        <el-date-picker v-model="model[item.key]" type="date" :editable="false" size="small"
+                                        :placeholder="item.placeholder || '请选择'" value-format="yyyy-MM-dd"></el-date-picker>
                     </template>
                     <template v-else-if="item.type==='dateRange'">
-                        <label v-if="item.label">{{item.label}}</label>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
                         <el-date-picker v-model="model[item.key]" type="daterange" :editable="false" size="small"
-                                        :picker-options="item.range && pickerOptions"
-                                        @focus="item.range && dateRangeFocus(item.range)"
-                                        value-format="yyyy-MM-dd"></el-date-picker>
+                                        :picker-options="item.range && pickerOptions" value-format="yyyy-MM-dd" @focus="item.range && dateRangeFocus(item.range)"></el-date-picker>
                     </template>
                     <template v-else-if="item.type==='dateTimeRange'">
-                        <label v-if="item.label">{{item.label}}</label>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
                         <el-date-picker v-model="model[item.key]" type="datetimerange" :editable="false" size="small"
-                                        :picker-options="item.range && pickerOptions"
-                                        :default-time="['00:00:00', '23:59:59']"
-                                        @focus="item.range && dateRangeFocus(item.range)"
-                                        value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                                        :picker-options="item.range && pickerOptions" :default-time="['00:00:00', '23:59:59']" value-format="yyyy-MM-dd HH:mm:ss" @focus="item.range && dateRangeFocus(item.range)"></el-date-picker>
                     </template>
                     <template v-else-if="item.type==='multipleInput'">
-                        <label v-if="item.label">{{item.label}}</label>
-                        <el-select class="multiple-select" v-model="model[item.key]" multiple filterable collapse-tags
-                                   size="small" allow-create :multiple-limit="item.limit || 0"
-                                   :placeholder="item.placeholder || '请直接输入或粘贴'" default-first-option reserve-keyword
-                                   @change="multipleInputChange(item)">
-                            <el-option v-for="option in item.options" :key="option.value"
-                                       :label="option.label || option.value" :value="option.value"></el-option>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
+                        <el-select v-model="model[item.key]" class="multiple-select" filterable size="small" allow-create
+                                   collapse-tags default-first-option multiple :multiple-limit="item.limit || 0" reserve-keyword
+                                   :placeholder="item.placeholder || '请直接输入或粘贴'" @change="multipleInputChange(item)">
+                            <el-option v-for="option in item.options" :key="option.value" :label="option.label || option.value" :value="option.value"></el-option>
                         </el-select>
                     </template>
                     <template v-else-if="item.type==='multipleSelect'">
-                        <label v-if="item.label">{{item.label}}</label>
-                        <el-select class="multiple-select" v-model="model[item.key]" multiple filterable collapse-tags
-                                   size="small" :multiple-limit="item.limit || 0"
-                                   :placeholder="item.placeholder || '请选择'" default-first-option>
-                            <el-option v-for="option in item.options" :key="option.value"
-                                       :label="option.label || option.value" :value="option.value"></el-option>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
+                        <el-select v-model="model[item.key]" class="multiple-select" filterable size="small"
+                                   collapse-tags default-first-option multiple :multiple-limit="item.limit || 0"
+                                   :placeholder="item.placeholder || '请选择'">
+                            <el-option v-for="option in item.options" :key="option.value" :label="option.label || option.value" :value="option.value"></el-option>
                         </el-select>
                     </template>
                     <template v-else-if="item.type==='cascade'">
-                        <label v-if="item.label">{{item.label}}</label>
-                        <el-cascader :options="item.options" :placeholder="item.placeholder" v-model="model[item.key]"
-                                     :props="{value: item.optionsValueKey, label: item.optionsLabelKey, children: item.optionsChildrenKey}"
-                                     :change-on-select="item.changeOnSelect" :show-all-levels="item.showAllLevels"
-                                     filterable clearable size="small"></el-cascader>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
+                        <el-cascader v-model="model[item.key]" :options="item.options" filterable clearable size="small"
+                                     :placeholder="item.placeholder" :props="{value: item.optionsValueKey, label: item.optionsLabelKey, children: item.optionsChildrenKey}"
+                                     :change-on-select="item.changeOnSelect" :show-all-levels="item.showAllLevels"></el-cascader>
                     </template>
                     <template v-else-if="item.type==='compound'">
-                        <label v-if="item.label">{{item.label}}</label>
-                        <el-input placeholder="搜索内容" v-model="compound.value" size="small">
-                            <el-select v-model="compound.key" filterable clearable slot="prepend" placeholder="搜索字段"
-                                       size="small">
-                                <el-option v-for="option in item.options" :key="option.value"
-                                           :label="option.label || option.value" :value="option.value"></el-option>
+                        <label v-if="item.label">
+                            {{ item.label }}
+                        </label>
+                        <el-input v-model="compound.value" placeholder="搜索内容" size="small">
+                            <el-select slot="prepend" v-model="compound.key" filterable clearable size="small"
+                                       placeholder="搜索字段">
+                                <el-option v-for="option in item.options" :key="option.value" :label="option.label || option.value" :value="option.value"></el-option>
                             </el-select>
                         </el-input>
                     </template>
@@ -78,13 +82,19 @@
             </template>
             <el-col :sm="12" :md="8" :lg="6">
                 <el-popover v-if="id" placement="bottom-end" trigger="click" popper-class="search-filter">
-                    <template v-for="item in searchData" v-if="item.toggle !== undefined">
-                        <el-checkbox v-model="item.toggle" @change="setSearch">{{item.label}}</el-checkbox>
-                    </template>
-                    <el-button type="text" size="mini" slot="reference">筛选<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+                    <el-checkbox v-for="item in searchData" v-if="item.toggle !== undefined" :key="item.key" v-model="item.toggle" @change="setSearch">
+                        {{ item.label }}
+                    </el-checkbox>
+                    <el-button slot="reference" type="text" size="mini">
+                        筛选<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
                 </el-popover>
-                <el-button type="default" size="mini" @click="resetSearch">重置</el-button>
-                <el-button type="primary" size="mini" @click="startSearch">搜索</el-button>
+                <el-button type="default" size="mini" @click="resetSearch">
+                    重置
+                </el-button>
+                <el-button type="primary" size="mini" @click="startSearch">
+                    搜索
+                </el-button>
             </el-col>
         </el-row>
     </div>
@@ -92,28 +102,16 @@
 <script>
     export default {
         name: 'Search',
-        data() {
-            return {
-                searchData: {},
-                model: {},
-                compound: {key: '', value: ''},
-                ensureDate: '',
-                ensureRange: '',
-                pickerOptions: {
-                    disabledDate: this.disabledDate,
-                    onPick: this.onPick
-                },
-                multipleInputValue: []
-            }
-        },
         props: {
             // 用户筛选行为保存id
             id: {
-                type: String
+                type: String,
+                default: ''
             },
             // 搜索权限
             access: {
-                type: String
+                type: String,
+                default: ''
             },
             // 数据列表,对象数组
             // type: select select型搜索框
@@ -180,6 +178,20 @@
             }
             // @search 开始搜索钩子,返回搜索字段
             // <div slot="search"></div> 自定义搜索内容
+        },
+        data() {
+            return {
+                searchData: {},
+                model: {},
+                compound: {key: '', value: ''},
+                ensureDate: '',
+                ensureRange: '',
+                pickerOptions: {
+                    disabledDate: this.disabledDate,
+                    onPick: this.onPick
+                },
+                multipleInputValue: []
+            }
         },
         created() {
             // 读取缓存

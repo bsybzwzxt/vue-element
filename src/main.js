@@ -29,7 +29,6 @@ directives.map(directive => {
     Vue.use(directive);
 });
 
-
 import App from './App';
 import router from './router';
 import store from './vuex';

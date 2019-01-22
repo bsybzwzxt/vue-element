@@ -2,26 +2,29 @@
     <div class="gridding">
         <batch-toolbar v-if="batch" :batch="batch" :selection="selection"></batch-toolbar>
         <div v-if="batch" class="gridding-check-all">
-            <label @click="selectionAll"><i class="fa fa-lg fa-fw" :class="checkAll ? 'fa-check-square' : 'fa-square-o'"></i>全选</label>
+            <label @click="selectionAll">
+                <i class="fa fa-lg fa-fw" :class="checkAll ? 'fa-check-square' : 'fa-square-o'"></i>全选
+            </label>
         </div>
         <div class="gridding-layout">
-            <div v-for="item in data">
+            <div v-for="item in data" :key="item.label">
                 <el-popover placement="top" trigger="hover" :disabled="!popover">
                     <slot v-if="popover" name="popover" :data="item"></slot>
-                    <div class="gridding-image" @click="selectionChange(item)" slot="reference">
-                        <img :src="item[srcKey]" alt="alt"/>
-                        <div class="gridding-handle" v-if="handle">
-                        <span v-for="i in handle" v-if="(!i.access || $state.user.access[i.access]) && (!i.display || item[i.display])"
-                              @click="handleCallback(item, i)">
-                            <i v-if="i.icon" class="fa fa-lg" :class="i.icon"></i>{{i.label}}
-                        </span>
+                    <div slot="reference" class="gridding-image" @click="selectionChange(item)">
+                        <img :src="item.srcKey" alt="alt"/>
+                        <div v-if="handle" class="gridding-handle">
+                            <span v-for="i in handle" v-if="(!i.access || $state.user.access[i.access]) && (!i.display || item[i.display])" :key="i.label" @click="handleCallback(item, i)">
+                                <i v-if="i.icon" class="fa fa-lg" :class="i.icon"></i>{{ i.label }}
+                            </span>
                         </div>
                         <div v-if="batch" class="gridding-check" :class="item.griddingSelected ? 'active' : ''">
                             <i :class="item.griddingSelected ? 'fa-check-square' : 'fa-square-o'" class="fa fa-lg"></i>
                         </div>
                     </div>
                 </el-popover>
-                <div class="gridding-title">{{item[titleKey]}}</div>
+                <div class="gridding-title">
+                    {{ item[titleKey] }}
+                </div>
             </div>
         </div>
     </div>
@@ -31,13 +34,6 @@
 
     export default {
         name: 'Gridding',
-        data() {
-            return {
-                checkAll: false,
-                selection: [],
-                // imageDefault
-            }
-        },
         props: {
             // 表数据
             // isSelected: Boolean 数据是否默认勾选
@@ -68,7 +64,10 @@
             // |--display: String 显示依赖字段
             // |--callback: Function 回调方法
             handle: {
-                type: Array
+                type: Array,
+                default: () => {
+                    return []
+                }
             },
             // batch: Array 工具条按钮组
             // |--mode: String 必填,选择模式,有button,dropdown和custom
@@ -80,9 +79,19 @@
             // |--options: mode为dropdown时的下拉选项,label和value(select类似)
             // |--slotName: mode为slot时的slotName
             batch: {
-                type: Array
+                type: Array,
+                default: () => {
+                    return []
+                }
             }
             // @selection 改变选中时钩子,返回选中数组
+        },
+        data() {
+            return {
+                checkAll: false,
+                selection: [],
+                // imageDefault
+            }
         },
         watch: {
             data: {

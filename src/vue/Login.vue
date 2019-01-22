@@ -32,18 +32,18 @@
         <div class="login-right">
             <div class="login-from">
                 <h2><i class="login-logo"></i>欢迎使用</h2>
-                <div :class="loginParams.error?'':'hidden'" class="login-error1"><i class="el-icon-warning"></i> {{loginParams.errorMsg}}</div>
+                <div :class="loginParams.error ? '' : 'hidden'" class="login-error1"><i class="el-icon-warning"></i> {{loginParams.errorMsg}}</div>
                 <div class="login-from-control">
                     <label>账号</label>
                     <el-input v-model="loginForm.username" :disabled="loginParams.isLogin" placeholder="请输入"
-                              @focus="loginParams.usernameError=false;loginParams.error=false"></el-input>
+                              @focus="loginParams.usernameError = false; loginParams.error = false"></el-input>
                     <div :class="loginParams.usernameError?'':'hidden'" class="login-error2">账号不能为空</div>
                 </div>
                 <div class="login-from-control">
                     <label>密码</label>
                     <el-input type="password" v-model="loginForm.password" :disabled="loginParams.isLogin" placeholder="请输入"
-                              @focus="loginParams.passwordError=false;loginParams.error=false"></el-input>
-                    <div :class="loginParams.passwordError?'':'hidden'" class="login-error2">密码不能为空</div>
+                              @focus="loginParams.passwordError = false; loginParams.error = false"></el-input>
+                    <div :class="loginParams.passwordError ? '' : 'hidden'" class="login-error2">密码不能为空</div>
                 </div>
                 <div class="login-from-control">
                     <el-button type="primary" @click="onSubmit">{{loginParams.isLogin ? '登录中...' : '登录'}}
@@ -55,6 +55,7 @@
 </template>
 <script>
     import Parallax from 'parallax-js'
+    import {login} from 'src/api/system'
 
     export default {
         data() {
@@ -108,22 +109,16 @@
                     return;
                 }
                 this.loginParams.isLogin = true;
-                // this.$axios({
-                //     method: "post",
-                //     url: this.$api.system.login,
-                //     data: this.loginForm
-                // }).then(response => {
+
+                // login(this.loginForm, {header: {'Authorization': null}}).then((result) => {
                 //     this.loginParams.isLogin = false;
-                //     if (response.data.code === 0) {
-                //         localStorage.setItem('token', response.data.data.token);
-                //         this.$store.commit('user/setUserInfo', response.data.data);
-                //         this.$router.push({path: '/main/index'});
-                //     } else {
-                //         this.loginParams.errorMsg = response.data.msg || '登录失败，请稍后重试';
-                //         this.loginParams.error = true;
-                //     }
-                // }).catch(error => {
-                //     this.$message({message: '登录失败,请稍后重试', type: 'error'});
+                //     localStorage.setItem('token', result.token);
+                //     this.$store.commit('user/setUserInfo', result);
+                //     this.$router.push({path: '/main/index'});
+                // }).catch((error) => {
+                //     console.log(error);
+                //     this.loginParams.isLogin = false;
+                //     this.loginParams.error = true;
                 // });
 
                 localStorage.setItem('token', '123');
@@ -247,16 +242,6 @@
         background-color: #FFFFFF;
         overflow: hidden;
         min-width: 793.6px;
-    }
-
-    .holiday {
-        margin-top: 40px;
-        text-align: center;
-        color: red;
-    }
-
-    .holiday p span:first-child {
-        margin-right: 16px;
     }
 
     /*以下为视差引擎样式*/

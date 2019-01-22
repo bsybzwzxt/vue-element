@@ -1,13 +1,15 @@
 <template>
     <div class="tabulation">
         <slot name="caption"></slot>
-        <batch-toolbar v-if="batch || keys" :batch="batch" :id="id" :keys="keys" :selection="selection"></batch-toolbar>
-        <el-table :ref="id" :data="data" :border="showBorder" :max-height="maxHeight" @selection-change="selectionChange" @sort-change="sortChange">
+        <batch-toolbar v-if="batch || keys" :id="id" :batch="batch" :keys="keys" :selection="selection"></batch-toolbar>
+        <el-table :ref="id" :data="data" :border="showBorder" :max-height="maxHeight"
+                  @selection-change="selectionChange" @sort-change="sortChange">
             <el-table-column v-if="showSelect" type="selection" align="center" width="50" :selectable="setSelectable && selectable"></el-table-column>
             <el-table-column v-if="showIndex" type="index" align="center" width="50"></el-table-column>
             <template v-for="item in keys" v-if="item.toggle !== false">
-                <el-table-column :column-key="item.key" :prop="item.key" :label="item.label" :sortable="item.sort" :align="item.align"
-                                 :width="item.width" :min-width="item.minWidth" :show-overflow-tooltip="item.overflow" :class-name="item.class">
+                <el-table-column :key="item.key" :column-key="item.key" :prop="item.key" :label="item.label"
+                                 :sortable="item.sort" :align="item.align" :width="item.width" :min-width="item.minWidth"
+                                 :show-overflow-tooltip="item.overflow" :class-name="item.class">
                     <template slot-scope="scope">
                         <img v-if="item.type === 'picture'" width="100%" :src="scope.row[item.key]"/>
                         <slot v-else-if="item.type === 'custom'" :name="item.slotName" v-bind="scope"></slot>
@@ -18,21 +20,19 @@
             <el-table-column v-if="handle" label="操作" align="center" :width="handleWidth" :fixed="handleFixed">
                 <template slot-scope="scope">
                     <template v-for="item in handle" v-if="!item.access || $state.user.access[item.access]">
-                        <el-button v-if="item.mode === 'button' && (!item.display || scope.row[item.display])" size="mini" :type="item.type"
-                                   :disabled="(item.disabled && scope.row[item.disabled])"
-                                   @click="item.callback(scope.row, scope.$index, scope.column)">
-                            <i v-if="item.icon" class="fa" :class="item.icon"></i>{{item.label}}
+                        <el-button v-if="item.mode === 'button' && (!item.display || scope.row[item.display])" :key="item.label" size="mini" :type="item.type"
+                                   :disabled="(item.disabled && scope.row[item.disabled])" @click="item.callback(scope.row, scope.$index, scope.column)">
+                            <i v-if="item.icon" class="fa" :class="item.icon"></i>{{ item.label }}
                         </el-button>
-                        <el-dropdown v-if="item.mode === 'dropdown' && (!item.display || scope.row[item.display])" size="mini" placement="bottom"
-                                     @command="dropdownCommand" @visible-change="dropdownVisibleChange(item, scope.row)">
+                        <el-dropdown v-if="item.mode === 'dropdown' && (!item.display || scope.row[item.display])" :key="item.label" size="mini"
+                                     placement="bottom" @command="dropdownCommand" @visible-change="dropdownVisibleChange(item, scope.row)">
                             <el-button :type="item.type" size="mini">
-                                <i v-if="item.icon" class="fa" :class="item.icon"></i>{{item.label}}<i class="el-icon-arrow-down el-icon--right"></i>
+                                <i v-if="item.icon" class="fa" :class="item.icon"></i>{{ item.label }}<i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="option in (typeof item.options === 'string' ? scope.row[item.options] : item.options)"
-                                                  v-if="!option.display || scope.row[option.display]"
-                                                  :disabled="(option.disabled && scope.row[option.disabled])"
-                                                  :key="option.value" divided :command="option.value">{{option.label}}
+                                <el-dropdown-item v-for="option in (typeof item.options === 'string' ? scope.row[item.options] : item.options)" v-if="!option.display || scope.row[option.display]"
+                                                  :key="option.value" :disabled="(option.disabled && scope.row[option.disabled])" divided :command="option.value">
+                                    {{ option.label }}
                                 </el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -45,20 +45,12 @@
 <script>
     export default {
         name: 'Tabulation',
-        data() {
-            return {
-                selection: [],
-                dropdown: {
-                    currentRow: {},
-                    currentItem: {}
-                }
-            }
-        },
         props: {
             // 表数据
             // 用户筛选行为保存id和ref的值
             id: {
-                type: String
+                type: String,
+                default: ''
             },
             // |--isSelected: Boolean 数据是否默认勾选
             data: {
@@ -72,7 +64,8 @@
             },
             // 表格最大高度
             maxHeight: {
-                type: [String, Number]
+                type: [String, Number],
+                default: undefined
             },
             // 是否显示选择框
             showSelect: {
@@ -111,7 +104,10 @@
             // |--options: mode为dropdown时的下拉选项,label和value(select类似)
             // |--slotName: mode为slot时的slotName
             batch: {
-                type: Array
+                type: Array,
+                default: () => {
+                    return []
+                }
             },
             // handle: Array 操作列设置
             // |--access: String 权限Key
@@ -126,22 +122,37 @@
             // |--|--display: String 下拉选项显示依赖字段
             // |--|--disabled: String 下拉选项不可用依赖字段
             handle: {
-                type: Array
+                type: Array,
+                default: () => {
+                    return []
+                }
             },
             // 操作列宽度
             handleWidth: {
-                type: Number
+                type: Number,
+                default: undefined
             },
             // 操作列固定位置
             handleFixed: {
-                type: String
+                type: String,
+                default: undefined
             },
             // selection设置禁止选择,需要返回Boolean
             setSelectable: {
-                type: Function
+                type: Function,
+                default: undefined
             }
             // @selection 改变选中时钩子,返回选中数组
             // @sort 后台排序需要实现的函数,返回列,属性,顺序
+        },
+        data() {
+            return {
+                selection: [],
+                dropdown: {
+                    currentRow: {},
+                    currentItem: {}
+                }
+            }
         },
         watch: {
             data: {

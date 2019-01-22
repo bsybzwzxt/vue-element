@@ -27,20 +27,20 @@ export default {
     // 日期格式化
     dateFormat: function (date, format) {
         let o = {
-            "M+": date.getMonth() + 1,                   //月份
-            "d+": date.getDate(),                        //日
-            "h+": date.getHours(),                       //小时
-            "m+": date.getMinutes(),                     //分
-            "s+": date.getSeconds(),                     //秒
-            "q+": Math.floor((date.getMonth() + 3) / 3), //季度
-            "S": date.getMilliseconds()                  //毫秒
+            'M+': date.getMonth() + 1,                   //月份
+            'd+': date.getDate(),                        //日
+            'h+': date.getHours(),                       //小时
+            'm+': date.getMinutes(),                     //分
+            's+': date.getSeconds(),                     //秒
+            'q+': Math.floor((date.getMonth() + 3) / 3), //季度
+            'S': date.getMilliseconds()                  //毫秒
         };
         if (/(y+)/.test(format)) {
-            format = format.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+            format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
         }
         for (let k in o) {
-            if (new RegExp("(" + k + ")").test(format)) {
-                format = format.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            if (new RegExp('(' + k + ')').test(format)) {
+                format = format.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
             }
         }
         return format;
@@ -83,9 +83,9 @@ export default {
     // 利用iframe批量下载
     iframeDownload: function (urls) {
         let downloadFile = (url) => {
-            let iframe = document.createElement("iframe");
+            let iframe = document.createElement('iframe');
             iframe.src = url;
-            iframe.style.display = "none";
+            iframe.style.display = 'none';
             document.body.appendChild(iframe);
             setTimeout(() => {
                 document.body.removeChild(iframe);
@@ -110,7 +110,7 @@ export default {
     //     form.append('file', this.file.raw);
     //     form.append('template', this.value);
     //     let xhr = new XMLHttpRequest();
-    //     // xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    //     // xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     //     xhr.open('post', '/api/uploadExcel', true);
     //     xhr.send(form);
     //     xhr.onreadystatechange = () => {

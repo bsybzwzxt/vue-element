@@ -1,15 +1,15 @@
 <template>
     <transition name="fade">
-        <div class="main-tabs" :class="tabs2.length > 0 && 'tab'" v-if="tabs1.length > 0">
+        <div v-if="tabs1.length > 0" class="main-tabs" :class="tabs2.length > 0 && 'tab'">
             <el-tabs v-model="tabs1Active" type="border-card" @tab-click="tabs1Click()">
                 <template v-for="item in tabs1" v-if="!item.access || $state.user.access[item.access]">
-                    <el-tab-pane :lazy="true" :label="item.name" :name="item.name"></el-tab-pane>
+                    <el-tab-pane :key="item.name" :lazy="true" :label="item.name" :name="item.name"></el-tab-pane>
                 </template>
             </el-tabs>
             <!--<el-tabs v-if="tabs2.length > 0" v-model="tabs2Active" @tab-click="tabs2Click()">-->
-                <!--<template v-for="item in tabs2" v-if="!item.access || $state.user.access[item.access]">-->
-                    <!--<el-tab-pane :lazy="true" :label="item.name" :name="item.name"></el-tab-pane>-->
-                <!--</template>-->
+            <!--<template v-for="item in tabs2" v-if="!item.access || $state.user.access[item.access]">-->
+            <!--<el-tab-pane :lazy="true" :label="item.name" :name="item.name"></el-tab-pane>-->
+            <!--</template>-->
             <!--</el-tabs>-->
         </div>
     </transition>
@@ -17,18 +17,18 @@
 <script>
     export default {
         name: 'Tabs',
-        data () {
+        props: {
+            routeList: {
+                type: Array,
+                required: true
+            }
+        },
+        data() {
             return {
                 tabs1: [],
                 tabs2: [],
                 tabs1Active: '',
                 tabs2Active: ''
-            }
-        },
-        props: {
-            routeList: {
-                type: Array,
-                required: true
             }
         },
         watch: {
