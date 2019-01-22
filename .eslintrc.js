@@ -3,8 +3,13 @@ module.exports = {
         parser: 'babel-eslint',
         sourceType: 'module'
     },
+    env: {
+        'browser': true,
+        'node': true
+    },
     extends: [
         // 'plugin:vue/base',
+        'eslint:recommended',
         'plugin:vue/recommended'
     ],
     rules: {
@@ -31,6 +36,18 @@ module.exports = {
             'svg': 'any',
             'math': 'any'
         }],
+        'vue/this-in-template': 'error',
+        'vue/html-quotes': 'error',
+        'vue/no-spaces-around-equal-signs-in-attribute': 'error',
+        'vue/no-multi-spaces': 'error',
+        'vue/mustache-interpolation-spacing': 'error',
+        'vue/require-default-prop': 'error',
+        'vue/singleline-html-element-content-newline': 'error',
+        'vue/multiline-html-element-content-newline': 'error',
+        'vue/attributes-order': 'error',
+        'vue/order-in-components': 'error',
+        'vue/attribute-hyphenation': 'error',
+        'vue/no-template-shadow': 'error',
         'vue/no-v-html': 0,
         // 'semi': ['error', 'always'],
         // 'no-console': 'error',
