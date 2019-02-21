@@ -31,6 +31,11 @@
         //     }
         // }
         created() {
+            // 版本控制
+            if (sessionStorage.getItem('version') !== localStorage.getItem('version')) {
+                localStorage.clear();
+                localStorage.setItem('version', sessionStorage.getItem('version'));
+            }
             if (localStorage.getItem('token')) {
                 let fake = {
                     access: [

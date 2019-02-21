@@ -104,6 +104,14 @@ export default {
     },
     isDataType(data, type) {
         return Object.prototype.toString.call(data).split('[object ')[1].split(']')[0] === type;
+    },
+    downloadBlob(data, filename) {
+        let blob = new Blob([data]);
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        link.remove();
     }
     // uploadFile: function () {
     //     let form = new FormData();

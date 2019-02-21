@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "development": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js --progress --colors",
-    "production": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress --colors",
+    "production": "cross-env NODE_ENV=production node webpack.config.js",
     "test": "cross-env NODE_ENV=development karma start test/karma.conf.js"
   },
   "author": "zhangjuncheng",

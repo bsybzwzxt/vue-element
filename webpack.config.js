@@ -1,15 +1,94 @@
 const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 const Webpack = require('webpack');
 const WebpackMerge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
+// 生成version版本hash
+const hash = crypto.createHash('md5').update(new Date().getTime().toString(), 'utf8').digest('hex');
 let options = require(path.join(__dirname, 'webpack.options.js'));
-let config = {};
+
+let webpackConfig = {
+    mode: process.env.NODE_ENV,
+    entry: {
+        app: ["babel-polyfill", path.join(__dirname, 'src/main.js')]
+    },
+    resolve: {
+        extensions: ['.js', '.vue'],
+        alias: {
+            'vue': 'vue/dist/vue.esm.js',
+            'src': path.join(__dirname, 'src')
+        }
+    },
+    module: {
+        rules: [{
+            test: /\.vue$/,
+            loader: 'vue-loader',
+            options: {
+                loaders: {
+                    js: [{
+                        loader: 'babel-loader', options: {
+                            presets: ['env'],
+                            plugins: ['transform-runtime', 'transform-object-rest-spread']
+                        }
+                    }]
+                }
+            }
+        }, {
+            test: /\.js$/,
+            include: [
+                path.join(__dirname, 'src')
+            ],
+            use: [{
+                loader: 'babel-loader',
+                options: {
+                    presets: ['env'],
+                    plugins: ['transform-runtime', 'transform-object-rest-spread']
+                }
+            }]
+        }, {
+            test: /\.json$/, loader: 'json-loader'
+        }, {
+            test: /\.(jp(e)?g|gif|png)(\?.*)?$/,
+            use: [{
+                loader: 'url-loader',
+                options: {
+                    limit: 10240,
+                    name: 'images/[name].[hash].[ext]',
+                    // publicPath: '..'
+                }
+            }]
+        }, {
+            test: /\.(woff(2)?|eot|ttf|otf|svg)(\?.*)?$/,
+            use: [{
+                loader: 'url-loader',
+                query: {
+                    limit: 10240,
+                    name: 'font/[name].[hash].[ext]',
+                    publicPath: '..'
+                }
+            }]
+        }]
+    },
+    plugins: [
+        // webpack4中js分割
+        new Webpack.optimize.SplitChunksPlugin({
+            cacheGroups: {
+                vendor: {
+                    test: /node_modules/,
+                    name: 'vendor',
+                    enforce: true
+                }
+            }
+        })
+    ]
+};
 
 if (process.env.NODE_ENV === 'development') {
-    config = {
+    module.exports = WebpackMerge(webpackConfig, {
         devServer: {
             hot: true,
             port: options.port,
@@ -67,42 +146,23 @@ if (process.env.NODE_ENV === 'development') {
         },
         devtool: '#cheap-module-eval-source-map',
         plugins: [
-            new Webpack.HotModuleReplacementPlugin()
+            new Webpack.HotModuleReplacementPlugin(),
+            new HtmlWebpackPlugin({
+                filename: 'index.html',
+                template: 'index.html',
+                minify: {
+                    // 删除html中的注释代码
+                    removeComments: true,
+                    // 删除html中的空白符
+                    collapseWhitespace: true
+                }
+            }),
         ]
-    };
-    // 开发环境启用热加载,不能抽离css
-    // options.cssUse = ['style-loader', {
-    //     loader: 'css-loader', options: {importLoaders: 1}
-    // }, {
-    //     loader: 'postcss-loader', options: {
-    //         plugins: [
-    //             // require('postcss-px2rem')({remUnit: 16}),
-    //             require('autoprefixer')()
-    //         ]
-    //     }
-    // }];
-    // options.scssUse = ['style-loader', 'css-loader', {
-    //     loader: 'postcss-loader', options: {
-    //         sourceMap: true,
-    //         plugins: [
-    //             // require('postcss-px2rem')({remUnit: 16}),
-    //             require('autoprefixer')()
-    //         ]
-    //     }
-    // }, 'sass-loader'];
-    // options.lessUse = ['style-loader', 'css-loader', {
-    //     loader: 'postcss-loader', options: {
-    //         sourceMap: true,
-    //         plugins: [
-    //             // require('postcss-px2rem')({remUnit: 16}),
-    //             require('autoprefixer')()
-    //         ]
-    //     }
-    // }, 'less-loader'];
+    });
 }
 
 if (process.env.NODE_ENV === 'production') {
-    config = {
+    let productionConfig = WebpackMerge(webpackConfig, {
         output: {
             filename: 'javascript/[name].[hash].js',
             path: path.join(__dirname, 'dist'),
@@ -153,6 +213,17 @@ if (process.env.NODE_ENV === 'production') {
             new CleanWebpackPlugin(['dist', 'dist.rar', 'dist.zip']),
             new MiniCssExtractPlugin({
                 filename: 'css/[name].[hash].css'
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'index.html',
+                template: 'index.html',
+                script: `<script type="text/javascript">sessionStorage.setItem('version', '${hash}')</script>`,
+                minify: {
+                    // 删除html中的注释代码
+                    removeComments: true,
+                    // 删除html中的空白符
+                    collapseWhitespace: true
+                }
             })
             // new Webpack.NamedChunksPlugin(chunk => {
             //     if (chunk.name) {
@@ -176,131 +247,19 @@ if (process.env.NODE_ENV === 'production') {
             // })
             // new ExtractTextPlugin({filename: 'css/[name].[hash].css', allChunks: true})
         ]
-    };
-    // options.cssUse = [MiniCssExtractPlugin.loader, {
-    //     loader: 'css-loader', options: {importLoaders: 1}
-    // }, {
-    //     loader: 'postcss-loader', options: {
-    //         plugins: [
-    //             require('autoprefixer')(),
-    //             // require('postcss-px2rem')({remUnit: 16}),
-    //             require('cssnano')()
-    //         ]
-    //     }
-    // }];
-    // options.scssUse = [MiniCssExtractPlugin.loader, 'css-loader', {
-    //     loader: 'postcss-loader', options: {
-    //         sourceMap: true,
-    //         plugins: [
-    //             require('autoprefixer')(),
-    //             // require('postcss-px2rem')({remUnit: 16}),
-    //             require('cssnano')()
-    //         ]
-    //     }
-    // }, 'sass-loader'];
-    // options.lessUse = [MiniCssExtractPlugin.loader, 'css-loader', {
-    //     loader: 'postcss-loader', options: {
-    //         sourceMap: true,
-    //         plugins: [
-    //             require('autoprefixer')(),
-    //             // require('postcss-px2rem')({remUnit: 16}),
-    //             require('cssnano')()
-    //         ]
-    //     }
-    // }, 'less-loader'];
-}
-
-module.exports = WebpackMerge(config, {
-    mode: process.env.NODE_ENV,
-    entry: {
-        app: ["babel-polyfill", path.join(__dirname, 'src/main.js')]
-    },
-    resolve: {
-        extensions: ['.js', '.vue'],
-        alias: {
-            'vue': 'vue/dist/vue.esm.js',
-            'src': path.join(__dirname, 'src')
+    });
+    // 手动启动webpack
+    Webpack(productionConfig, function (err, stats) {
+        if (err || stats.hasErrors()) {
+            console.error(err || stats.hasErrors());
+            throw err || stats.hasErrors();
         }
-    },
-    module: {
-        rules: [{
-            test: /\.vue$/,
-            loader: 'vue-loader',
-            options: {
-                loaders: {
-                    js: [{
-                        loader: 'babel-loader', options: {
-                            presets: ['env'],
-                            plugins: ['transform-runtime', 'transform-object-rest-spread']
-                        }
-                    }]
-                }
-            }
-        }, {
-            test: /\.js$/,
-            include: [
-                path.join(__dirname, 'src')
-            ],
-            use: [{
-                loader: 'babel-loader',
-                options: {
-                    presets: ['env'],
-                    plugins: ['transform-runtime', 'transform-object-rest-spread']
-                }
-            }]
-            // }, {
-            //     test: /\.css$/,
-            //     use: options.cssUse
-            // }, {
-            //     test: /\.scss$/,
-            //     use: options.scssUse
-            // }, {
-            //     test: /\.less$/,
-            //     use: options.lessUse
-        }, {
-            test: /\.json$/, loader: 'json-loader'
-        }, {
-            test: /\.(jp(e)?g|gif|png)(\?.*)?$/,
-            use: [{
-                loader: 'url-loader',
-                options: {
-                    limit: 10240,
-                    name: 'images/[name].[hash].[ext]',
-                    // publicPath: '..'
-                }
-            }]
-        }, {
-            test: /\.(woff(2)?|eot|ttf|otf|svg)(\?.*)?$/,
-            use: [{
-                loader: 'url-loader',
-                query: {
-                    limit: 10240,
-                    name: 'font/[name].[hash].[ext]',
-                    publicPath: '..'
-                }
-            }]
-        }]
-    },
-    plugins: [
-        // webpack4中js分割
-        new Webpack.optimize.SplitChunksPlugin({
-            cacheGroups: {
-                vendor: {
-                    test: /node_modules/,
-                    name: 'vendor',
-                    enforce: true
-                }
-            }
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: 'index.html',
-            minify: {
-                // 删除html中的注释代码
-                removeComments: true,
-                // 删除html中的空白符
-                collapseWhitespace: true
-            }
-        }),
-    ]
-});
+        process.stdout.write(stats.toString({
+            colors: true,
+            modules: false,
+            children: false,
+            chunks: false,
+            chunkModules: false
+        }) + '\n');
+    })
+}

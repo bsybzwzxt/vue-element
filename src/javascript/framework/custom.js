@@ -6,7 +6,7 @@ import store from 'src/vuex';
 import {Message} from 'element-ui';
 
 // 请求数据
-export function ajax(method, url, params, success, error, {loading = true, header = {}} = {}) {
+export function ajax(method, url, params, success, error, {loading = true, header = {}, responseType = 'json'} = {}) {
     if (loading) {
         store.commit('layout/setLoading', true);
     }
@@ -14,8 +14,9 @@ export function ajax(method, url, params, success, error, {loading = true, heade
         method: method,
         url: url,
         data: params,
+        responseType: responseType,
         headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
+            Authorization: 'Bearer ' + localStorage.getItem('token')
         }
     };
     if (Object.prototype.toString.call(header) === '[object Object]') {
@@ -27,6 +28,9 @@ export function ajax(method, url, params, success, error, {loading = true, heade
     return axios(options).then(response => {
         if (loading) {
             store.commit('layout/setLoading', false);
+        }
+        if (responseType !== 'json') {
+            return response;
         }
         if (response.data.code === 0) {
             success && success(response.data.data);
@@ -49,7 +53,6 @@ export function ajax(method, url, params, success, error, {loading = true, heade
             Message({message: error.response.status + error.response.statusText, type: 'error'});
             if (error.response.status === 401) {
                 localStorage.removeItem('token');
-                localStorage.removeItem('shopId');
                 // this.$router.push({path: '/login'});
             }
         } else if (!error) {
@@ -63,7 +66,11 @@ export function ajaxAll(ajaxList) {
     store.commit('layout/setLoading', true);
     let promiseList = [];
     for (let item of ajaxList) {
-        promiseList.push(item.ajax.bind(this, item.params || {}, Object.assign({loading: false}, {header: item.header}))());
+        promiseList.push(item.ajax.bind(this, item.params, {
+            loading: false,
+            header: item.header,
+            responseType: item.responseType
+        })());
     }
     return Promise.all(promiseList).then((result) => {
         store.commit('layout/setLoading', false);
@@ -74,10 +81,15 @@ export function ajaxAll(ajaxList) {
 export function initApi(config) {
     let api = {};
     for (let item in config) {
-        api[item] = function (params = {}, {loading = true, header = {}} = {}) {
+        api[item] = function (params = {}, {
+            loading = config[item].loading,
+            header = config[item].header,
+            responseType = config[item].responseType
+        } = {}) {
             return ajax(config[item].method, initUrl(config[item].url, params), params, null, null, {
                 loading: loading,
-                header: header
+                header: header,
+                responseType: responseType
             }).then((result) => {
                 config[item].handle && config[item].handle(result);
                 return result;
