@@ -99,7 +99,7 @@ const analysis = (value, rules) => {
 const inspect = (value, rule) => {
     switch (rule.name) {
         case 'required':
-            if (value.length === 0) {
+            if (value === undefined || value.length === 0) {
                 return false;
             }
             break;
