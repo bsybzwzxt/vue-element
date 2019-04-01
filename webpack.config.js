@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 const crypto = require('crypto');
 const Webpack = require('webpack');
 const WebpackMerge = require('webpack-merge');
@@ -14,7 +13,7 @@ let options = require(path.join(__dirname, 'webpack.options.js'));
 let webpackConfig = {
     mode: process.env.NODE_ENV,
     entry: {
-        app: ["babel-polyfill", path.join(__dirname, 'src/main.js')]
+        app: ['babel-polyfill', path.join(__dirname, 'src/main.js')]
     },
     resolve: {
         extensions: ['.js', '.vue'],
@@ -92,8 +91,8 @@ if (process.env.NODE_ENV === 'development') {
         devServer: {
             hot: true,
             port: options.port,
-            host: '0.0.0.0',
-            historyApiFallback: true,
+            host: '127.0.0.1',
+            // historyApiFallback: true,
             // webpack-dev-server关闭host检查，如果hostname不是配置内的，将中断访问。
             disableHostCheck: true,
             proxy: options.proxy
@@ -105,7 +104,7 @@ if (process.env.NODE_ENV === 'development') {
                 include: [
                     path.join(__dirname, 'src')
                 ],
-                enforce: "pre",
+                enforce: 'pre',
                 loader: 'eslint-loader'
             }, {
                 // 开发环境启用热加载,不能抽离css
